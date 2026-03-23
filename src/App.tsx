@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
 import { useTasks } from './hooks/useTasks';
 import Header from './components/Header';
 import TaskSection from './components/TaskSection';
@@ -84,10 +84,65 @@ export default function App() {
   const scaledWidthMm = ((activeScale * PI_RES_WIDTH) / (96 / 25.4)).toFixed(0);
   const scaledHeightMm = ((activeScale * 720) / (96 / 25.4)).toFixed(0);
 
+  // Auto-fit: in 1:1 mode, scale down so the 1280x720 box fits the available space
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+  useLayoutEffect(() => {
+    if (mode !== 'full') return;
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      const { clientWidth, clientHeight } = el;
+      const s = Math.min(clientWidth / 1280, clientHeight / 720, 1);
+      setFitScale(s);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [mode]);
+
+  const finalScale = mode === 'physical' ? scale : fitScale;
+
+  const kiosk = import.meta.env.VITE_KIOSK === 'true';
+
+  if (kiosk) {
+    return (
+      <div id="taskwall-root" className="relative w-screen h-screen bg-wall-bg overflow-hidden flex flex-col">
+          {!configured ? (
+            <SetupScreen error={error} />
+          ) : (
+            <>
+              <Header
+                lastUpdated={lastUpdated}
+                loading={loading}
+                onRefresh={refresh}
+                collaborators={collaborators}
+                assigneeFilter={assigneeFilter}
+                onAssigneeFilter={setAssigneeFilter}
+                onAddTask={addTask}
+              />
+              {error && (
+                <ErrorBanner
+                  message={error}
+                  onDismiss={() => refresh()}
+                />
+              )}
+              <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] grid-rows-[1fr] gap-6 px-8 py-5 min-h-0 overflow-hidden">
+                <TaskSection title="Overdue" tasks={filterTasks(tasks?.overdue ?? [])} variant="overdue" icon="🔴" emptyMessage="All caught up!" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                <TaskSection title="Today" tasks={filterTasks(tasks?.today ?? [])} variant="today" icon="📋" emptyMessage="No tasks for today" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                <TaskSection title="Upcoming" tasks={filterTasks(tasks?.upcoming ?? [])} variant="upcoming" icon="📅" emptyMessage="Nothing upcoming" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+              </main>
+            </>
+          )}
+        </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-200 select-none">
+    <div className="flex flex-col items-center h-screen overflow-hidden bg-gray-200 select-none">
       {/* Controls bar */}
-      <div className="flex items-center gap-4 mb-3">
+      <div className="flex items-center gap-4 py-2 flex-shrink-0">
         <button
           onClick={cycleMode}
           className="px-3 py-1 text-xs rounded border transition-colors
@@ -125,9 +180,10 @@ export default function App() {
       </div>
 
       {/* Fixed 1280x720 container simulating Pi display */}
+      <div ref={containerRef} className="flex-1 flex items-center justify-center overflow-hidden min-h-0 min-w-0">
       <div
         style={{
-          transform: `scale(${activeScale})`,
+          transform: `scale(${finalScale})`,
           transformOrigin: 'center center',
         }}
       >
@@ -197,9 +253,10 @@ export default function App() {
         )}
         </div>
       </div>
+      </div>
 
       {mode === 'physical' && (
-        <p className="mt-3 text-[10px] text-gray-500">
+        <p className="py-1 text-[10px] text-gray-500 flex-shrink-0">
           ≈ {scaledWidthMm}×{scaledHeightMm}mm at 96 CSS-PPI · Target: 155.5×88mm · Drag slider until it matches a ruler
         </p>
       )}
