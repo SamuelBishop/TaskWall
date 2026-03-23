@@ -13,7 +13,7 @@ interface HeaderProps {
   onAssigneeFilter: (id: string | null) => void;
   onAddTask: (params: {
     content: string;
-    due?: { date: string; is_recurring?: boolean };
+    due?: { date?: string; string?: string };
     assignee_id?: string | null;
   }) => Promise<void>;
 }
