@@ -26,7 +26,7 @@ export default function Popover({ open, onClose, children, className = '' }: Pop
   return (
     <div
       ref={ref}
-      className={`absolute z-50 bg-white border border-wall-border rounded-lg shadow-lg ${className}`}
+      className={`absolute z-50 bg-wall-surface border border-wall-border/60 rounded-lg shadow-2xl shadow-black/60 ${className}`}
     >
       {children}
     </div>

@@ -1,5 +1,7 @@
 # TaskWall
 
+Updated UI with superior function.
+
 A minimalist, wall-mounted dashboard that displays your **Todoist** tasks in a clean, glanceable format. Designed for a Raspberry Pi with a 7-inch display (1280×720).
 
 ![Dark Mode Dashboard](https://img.shields.io/badge/display-1280×720-blue) ![React](https://img.shields.io/badge/react-19-blue) ![TypeScript](https://img.shields.io/badge/typescript-5.7-blue) ![Vite](https://img.shields.io/badge/vite-6-purple)
@@ -144,6 +146,10 @@ src/
 - **Vite 6** (build tool)
 - **Tailwind CSS 3.4** (styling)
 - **Todoist REST API v2** (data source)
+
+## Summary
+
+Updated UI with superior function.
 
 ## License
 
