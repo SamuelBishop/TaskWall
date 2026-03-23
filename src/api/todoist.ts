@@ -50,6 +50,10 @@ async function apiRequest<T>(
     throw new Error(`Todoist API error: ${res.status} ${res.statusText}`);
   }
 
+  if (res.status === 204 || res.headers.get('content-length') === '0') {
+    return undefined as T;
+  }
+
   return res.json();
 }
 
@@ -106,6 +110,12 @@ export async function updateTaskAssignee(
   await apiRequest(`/tasks/${taskId}`, {
     method: 'POST',
     body: JSON.stringify({ assignee_id: assigneeId }),
+  });
+}
+
+export async function deleteTask(taskId: string): Promise<void> {
+  await apiRequest(`/tasks/${taskId}`, {
+    method: 'DELETE',
   });
 }
 

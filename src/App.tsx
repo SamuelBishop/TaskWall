@@ -52,6 +52,7 @@ export default function App() {
     reassign,
     changeDue,
     addTask,
+    removeTask,
     refresh,
     lastUpdated,
   } = useTasks();
@@ -167,6 +168,7 @@ export default function App() {
                 collaborators={collaborators}
                 onReassign={reassign}
                 onUpdateDue={changeDue}
+                onDelete={removeTask}
               />
               <TaskSection
                 title="Today"
@@ -177,6 +179,7 @@ export default function App() {
                 collaborators={collaborators}
                 onReassign={reassign}
                 onUpdateDue={changeDue}
+                onDelete={removeTask}
               />
               <TaskSection
                 title="Upcoming"
@@ -187,6 +190,7 @@ export default function App() {
                 collaborators={collaborators}
                 onReassign={reassign}
                 onUpdateDue={changeDue}
+                onDelete={removeTask}
               />
             </main>
           </>

@@ -6,6 +6,7 @@ import {
   updateTaskAssignee,
   updateTaskDue,
   createTask,
+  deleteTask,
   isConfigured,
 } from '../api/todoist';
 import type { TaskGroup, Collaborator } from '../types';
@@ -22,6 +23,7 @@ interface UseTasksResult {
   reassign: (taskId: string, assigneeId: string | null) => Promise<void>;
   changeDue: (taskId: string, due: { date?: string; string?: string } | null) => Promise<void>;
   addTask: (params: CreateTaskParams) => Promise<void>;
+  removeTask: (taskId: string) => Promise<void>;
   refresh: () => Promise<void>;
   lastUpdated: Date | null;
 }
@@ -90,6 +92,14 @@ export function useTasks(): UseTasksResult {
     [loadTasks]
   );
 
+  const removeTask = useCallback(
+    async (taskId: string) => {
+      await deleteTask(taskId);
+      await loadTasks();
+    },
+    [loadTasks]
+  );
+
   return {
     tasks,
     loading,
@@ -99,6 +109,7 @@ export function useTasks(): UseTasksResult {
     reassign,
     changeDue,
     addTask,
+    removeTask,
     refresh: loadTasks,
     lastUpdated,
   };

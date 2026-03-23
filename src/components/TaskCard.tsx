@@ -10,6 +10,7 @@ interface TaskCardProps {
   collaborators: Collaborator[];
   onReassign: (taskId: string, assigneeId: string | null) => void;
   onUpdateDue: (taskId: string, due: { date?: string; string?: string } | null) => void;
+  onDelete: (taskId: string) => void;
 }
 
 const variantStyles = {
@@ -45,6 +46,7 @@ export default function TaskCard({
   collaborators,
   onReassign,
   onUpdateDue,
+  onDelete,
 }: TaskCardProps) {
   const styles = variantStyles[variant];
   const relative = daysUntil(task.due);
@@ -81,41 +83,51 @@ export default function TaskCard({
           {task.title}
         </p>
 
-        {/* Assignee badge */}
-        <div className="relative flex-shrink-0">
-          <button
-            onClick={() => setAssigneeOpen((o) => !o)}
-            className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
-              task.assigneeName
-                ? 'bg-wall-today/10 text-wall-today border-wall-today/20 hover:bg-wall-today/20'
-                : 'bg-gray-100 text-wall-muted border-gray-200 hover:bg-gray-200'
-            }`}
-            title={task.assigneeName ? `Assigned to ${task.assigneeName}` : 'Unassigned — click to assign'}
-          >
-            {task.assigneeName ? getFirstName(task.assigneeName) : '—'}
-          </button>
-
-          <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-7 py-1 min-w-[160px]">
+        {/* Assignee badge + delete */}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="relative">
             <button
-              onClick={() => { onReassign(task.id, null); setAssigneeOpen(false); }}
-              className={`w-full text-left px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors ${
-                !task.assigneeId ? 'text-wall-today font-medium' : 'text-wall-text'
+              onClick={() => setAssigneeOpen((o) => !o)}
+              className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+                task.assigneeName
+                  ? 'bg-wall-today/10 text-wall-today border-wall-today/20 hover:bg-wall-today/20'
+                  : 'bg-gray-100 text-wall-muted border-gray-200 hover:bg-gray-200'
               }`}
+              title={task.assigneeName ? `Assigned to ${task.assigneeName}` : 'Unassigned — click to assign'}
             >
-              Unassigned
+              {task.assigneeName ? getFirstName(task.assigneeName) : '—'}
             </button>
-            {collaborators.map((c) => (
+
+            <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-7 py-1 min-w-[160px]">
               <button
-                key={c.id}
-                onClick={() => { onReassign(task.id, c.id); setAssigneeOpen(false); }}
+                onClick={() => { onReassign(task.id, null); setAssigneeOpen(false); }}
                 className={`w-full text-left px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors ${
-                  task.assigneeId === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
+                  !task.assigneeId ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
-                {c.name}
+                Unassigned
               </button>
-            ))}
-          </Popover>
+              {collaborators.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => { onReassign(task.id, c.id); setAssigneeOpen(false); }}
+                  className={`w-full text-left px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors ${
+                    task.assigneeId === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </Popover>
+          </div>
+
+          <button
+            onClick={() => onDelete(task.id)}
+            className="text-[11px] px-1.5 py-0.5 rounded-full border border-gray-200 bg-gray-100 text-wall-muted hover:bg-red-50 hover:text-wall-overdue hover:border-wall-overdue/30 transition-colors"
+            title="Delete task"
+          >
+            ✕
+          </button>
         </div>
       </div>
 
