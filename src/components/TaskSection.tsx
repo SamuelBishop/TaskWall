@@ -10,6 +10,7 @@ interface TaskSectionProps {
   collaborators: Collaborator[];
   onReassign: (taskId: string, assigneeId: string | null) => void;
   onUpdateDue: (taskId: string, due: { date?: string; string?: string } | null) => void;
+  onDelete: (taskId: string) => void;
 }
 
 const headerStyles = {
@@ -33,6 +34,7 @@ export default function TaskSection({
   collaborators,
   onReassign,
   onUpdateDue,
+  onDelete,
 }: TaskSectionProps) {
   return (
     <div className="flex flex-col min-w-0 min-h-0 overflow-hidden">
@@ -68,6 +70,7 @@ export default function TaskSection({
               collaborators={collaborators}
               onReassign={onReassign}
               onUpdateDue={onUpdateDue}
+              onDelete={onDelete}
             />
           ))
         )}
