@@ -131,7 +131,7 @@ export default function TaskCard({
         </div>
       </div>
 
-      <div className="flex items-center gap-1.5 mt-1 overflow-hidden">
+      <div className="flex items-center gap-1.5 mt-1">
         {/* Clickable date badge → opens date picker */}
         <div className="relative flex-shrink-0">
           <button
