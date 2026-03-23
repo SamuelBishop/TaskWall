@@ -1,5 +1,6 @@
 import { formatFullDate, formatTime } from '../utils/date';
 import type { Collaborator } from '../types';
+import AddTaskForm from './AddTaskForm';
 
 interface HeaderProps {
   lastUpdated: Date | null;
@@ -8,6 +9,11 @@ interface HeaderProps {
   collaborators: Collaborator[];
   assigneeFilter: string | null;
   onAssigneeFilter: (id: string | null) => void;
+  onAddTask: (params: {
+    content: string;
+    due?: { date: string; is_recurring?: boolean };
+    assignee_id?: string | null;
+  }) => Promise<void>;
 }
 
 export default function Header({
@@ -17,6 +23,7 @@ export default function Header({
   collaborators,
   assigneeFilter,
   onAssigneeFilter,
+  onAddTask,
 }: HeaderProps) {
   const now = new Date();
 
@@ -35,6 +42,8 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-4">
+        <AddTaskForm collaborators={collaborators} onAdd={onAddTask} />
+
         {collaborators.length > 0 && (
           <select
             value={assigneeFilter ?? ''}

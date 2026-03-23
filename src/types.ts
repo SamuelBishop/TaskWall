@@ -42,6 +42,8 @@ export interface TaskItem {
   category: 'overdue' | 'today' | 'upcoming' | 'no-date';
   assigneeId: string | null;
   assigneeName: string | null;
+  isRecurring: boolean;
+  dueString: string | null;
 }
 
 export interface TaskGroup {
