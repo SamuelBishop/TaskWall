@@ -35,7 +35,7 @@ export default function TaskSection({
   onUpdateDue,
 }: TaskSectionProps) {
   return (
-    <div className="flex flex-col h-full min-w-0">
+    <div className="flex flex-col min-w-0 min-h-0 overflow-hidden">
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
           <span className="text-lg">{icon}</span>
@@ -54,7 +54,7 @@ export default function TaskSection({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto pr-1 min-h-0">
+      <div className="flex-1 overflow-y-auto min-h-0 pr-1">
         {tasks.length === 0 ? (
           <div className="flex items-center justify-center h-24 text-wall-muted text-sm">
             {emptyMessage}

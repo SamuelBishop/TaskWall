@@ -157,7 +157,7 @@ export default function App() {
               />
             )}
 
-            <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] gap-6 px-8 py-5 min-h-0">
+            <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] grid-rows-[1fr] gap-6 px-8 py-5 min-h-0 overflow-hidden">
               <TaskSection
                 title="Overdue"
                 tasks={filterTasks(tasks?.overdue ?? [])}
