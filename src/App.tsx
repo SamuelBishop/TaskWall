@@ -4,6 +4,7 @@ import Header from './components/Header';
 import TaskSection from './components/TaskSection';
 import SetupScreen from './components/SignInScreen';
 import ErrorBanner from './components/ErrorBanner';
+import type { TaskItem } from './types';
 
 // Pi Display 2: 1280×720 in 155.5mm × 88mm → ~209 PPI
 // We need to figure out how many CSS pixels = 155.5mm on the user's monitor.
@@ -47,12 +48,15 @@ export default function App() {
     loading,
     error,
     configured,
+    collaborators,
+    reassign,
     refresh,
     lastUpdated,
   } = useTasks();
 
   const [mode, setMode] = useState<ViewMode>('full');
   const [scale, setScale] = useState(() => loadSavedScale() ?? getDefaultScale());
+  const [assigneeFilter, setAssigneeFilter] = useState<string | null>(null);
 
   // Persist calibrated scale
   useEffect(() => {
@@ -62,6 +66,16 @@ export default function App() {
   const cycleMode = useCallback(() => {
     setMode((m) => (m === 'full' ? 'physical' : 'full'));
   }, []);
+
+  const filterTasks = useCallback(
+    (items: TaskItem[]) => {
+      if (!assigneeFilter) return items;
+      if (assigneeFilter === '__unassigned__')
+        return items.filter((t) => !t.assigneeId);
+      return items.filter((t) => t.assigneeId === assigneeFilter);
+    },
+    [assigneeFilter]
+  );
 
   const activeScale = mode === 'physical' ? scale : 1;
   const scaledWidthMm = ((activeScale * PI_RES_WIDTH) / (96 / 25.4)).toFixed(0);
@@ -125,6 +139,9 @@ export default function App() {
               lastUpdated={lastUpdated}
               loading={loading}
               onRefresh={refresh}
+              collaborators={collaborators}
+              assigneeFilter={assigneeFilter}
+              onAssigneeFilter={setAssigneeFilter}
             />
 
             {error && (
@@ -137,28 +154,33 @@ export default function App() {
               />
             )}
 
-            {/* Main task grid */}
             <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] gap-6 px-8 py-5 min-h-0">
               <TaskSection
                 title="Overdue"
-                tasks={tasks?.overdue ?? []}
+                tasks={filterTasks(tasks?.overdue ?? [])}
                 variant="overdue"
                 icon="🔴"
                 emptyMessage="All caught up!"
+                collaborators={collaborators}
+                onReassign={reassign}
               />
               <TaskSection
                 title="Today"
-                tasks={tasks?.today ?? []}
+                tasks={filterTasks(tasks?.today ?? [])}
                 variant="today"
                 icon="📋"
                 emptyMessage="No tasks for today"
+                collaborators={collaborators}
+                onReassign={reassign}
               />
               <TaskSection
                 title="Upcoming"
-                tasks={tasks?.upcoming ?? []}
+                tasks={filterTasks(tasks?.upcoming ?? [])}
                 variant="upcoming"
                 icon="📅"
                 emptyMessage="Nothing upcoming"
+                collaborators={collaborators}
+                onReassign={reassign}
               />
             </main>
           </>
