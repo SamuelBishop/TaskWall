@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { formatFullDate, formatTime } from '../utils/date';
 import type { Collaborator } from '../types';
 import AddTaskForm from './AddTaskForm';
+import Popover from './Popover';
 
 interface HeaderProps {
   lastUpdated: Date | null;
@@ -26,6 +28,13 @@ export default function Header({
   onAddTask,
 }: HeaderProps) {
   const now = new Date();
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const selectedLabel = assigneeFilter === '__unassigned__'
+    ? 'Unassigned'
+    : assigneeFilter
+      ? collaborators.find((c) => c.id === assigneeFilter)?.name ?? 'All'
+      : 'All';
 
   return (
     <header className="flex items-center justify-between px-8 py-4 border-b border-wall-border">
@@ -41,23 +50,47 @@ export default function Header({
         </p>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <AddTaskForm collaborators={collaborators} onAdd={onAddTask} />
 
         {collaborators.length > 0 && (
-          <select
-            value={assigneeFilter ?? ''}
-            onChange={(e) => onAssigneeFilter(e.target.value || null)}
-            className="text-xs bg-wall-surface border border-wall-border rounded px-2 py-1 text-wall-text"
-          >
-            <option value="">All people</option>
-            <option value="__unassigned__">Unassigned</option>
-            {collaborators.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <button
+              onClick={() => setFilterOpen((o) => !o)}
+              className="text-[11px] px-2 py-0.5 rounded border border-wall-border bg-wall-surface text-wall-text hover:bg-gray-100 transition-colors"
+            >
+              {selectedLabel} ▾
+            </button>
+            <Popover open={filterOpen} onClose={() => setFilterOpen(false)} className="right-0 top-6 py-1 min-w-[120px]">
+              <button
+                onClick={() => { onAssigneeFilter(null); setFilterOpen(false); }}
+                className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                  !assigneeFilter ? 'text-wall-today font-medium' : 'text-wall-text'
+                }`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => { onAssigneeFilter('__unassigned__'); setFilterOpen(false); }}
+                className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                  assigneeFilter === '__unassigned__' ? 'text-wall-today font-medium' : 'text-wall-text'
+                }`}
+              >
+                Unassigned
+              </button>
+              {collaborators.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => { onAssigneeFilter(c.id); setFilterOpen(false); }}
+                  className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                    assigneeFilter === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </Popover>
+          </div>
         )}
 
         {lastUpdated && (
