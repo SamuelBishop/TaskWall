@@ -4,9 +4,12 @@ import {
   fetchCollaborators,
   categorizeTasks,
   updateTaskAssignee,
+  updateTaskDue,
+  createTask,
   isConfigured,
 } from '../api/todoist';
 import type { TaskGroup, Collaborator } from '../types';
+import type { CreateTaskParams } from '../api/todoist';
 
 const REFRESH_INTERVAL = 5 * 60 * 1000;
 
@@ -17,6 +20,8 @@ interface UseTasksResult {
   configured: boolean;
   collaborators: Collaborator[];
   reassign: (taskId: string, assigneeId: string | null) => Promise<void>;
+  changeDue: (taskId: string, due: { date?: string; string?: string } | null) => Promise<void>;
+  addTask: (params: CreateTaskParams) => Promise<void>;
   refresh: () => Promise<void>;
   lastUpdated: Date | null;
 }
@@ -36,13 +41,11 @@ export function useTasks(): UseTasksResult {
     setLoading(true);
     setError(null);
     try {
-      if (collabRef.current.length === 0) {
-        const collabs = await fetchCollaborators();
-        collabRef.current = collabs;
-        setCollaborators(collabs);
-      }
+      const collabs = await fetchCollaborators();
+      collabRef.current = collabs;
+      setCollaborators(collabs);
       const rawTasks = await fetchAllTasks();
-      const grouped = categorizeTasks(rawTasks, collabRef.current);
+      const grouped = categorizeTasks(rawTasks, collabs);
       setTasks(grouped);
       setLastUpdated(new Date());
     } catch (err) {
@@ -71,6 +74,22 @@ export function useTasks(): UseTasksResult {
     [loadTasks]
   );
 
+  const changeDue = useCallback(
+    async (taskId: string, due: { date?: string; string?: string } | null) => {
+      await updateTaskDue(taskId, due);
+      await loadTasks();
+    },
+    [loadTasks]
+  );
+
+  const addTask = useCallback(
+    async (params: CreateTaskParams) => {
+      await createTask(params);
+      await loadTasks();
+    },
+    [loadTasks]
+  );
+
   return {
     tasks,
     loading,
@@ -78,6 +97,8 @@ export function useTasks(): UseTasksResult {
     configured,
     collaborators,
     reassign,
+    changeDue,
+    addTask,
     refresh: loadTasks,
     lastUpdated,
   };

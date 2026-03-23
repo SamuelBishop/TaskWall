@@ -109,10 +109,68 @@ export async function updateTaskAssignee(
   });
 }
 
+export async function updateTaskDue(
+  taskId: string,
+  due: { date?: string; string?: string } | null
+): Promise<void> {
+  if (!due) {
+    // Clear the due date
+    await apiRequest(`/tasks/${taskId}`, {
+      method: 'POST',
+      body: JSON.stringify({ due_string: 'no date' }),
+    });
+  } else if (due.string) {
+    // Recurring or natural language due
+    await apiRequest(`/tasks/${taskId}`, {
+      method: 'POST',
+      body: JSON.stringify({ due_string: due.string }),
+    });
+  } else if (due.date) {
+    // Specific date
+    await apiRequest(`/tasks/${taskId}`, {
+      method: 'POST',
+      body: JSON.stringify({ due_date: due.date }),
+    });
+  }
+}
+
+export interface CreateTaskParams {
+  content: string;
+  due?: { date?: string; string?: string };
+  assignee_id?: string | null;
+  project_id?: string;
+}
+
+export async function createTask(params: CreateTaskParams): Promise<void> {
+  const projectId = import.meta.env.VITE_TODOIST_PROJECT_ID;
+  const body: Record<string, unknown> = {
+    content: params.content,
+    project_id: params.project_id ?? projectId,
+  };
+  if (params.assignee_id) body.assignee_id = params.assignee_id;
+  if (params.due?.string) {
+    body.due_string = params.due.string;
+  } else if (params.due?.date) {
+    body.due_date = params.due.date;
+  }
+  await apiRequest('/tasks', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
 function startOfDay(date: Date): Date {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   return d;
+}
+
+// Parse YYYY-MM-DD as local midnight, not UTC midnight.
+// new Date("2026-03-23") → UTC midnight → wrong day in non-UTC timezones.
+// This parses as local midnight so March 23 stays March 23.
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 export function categorizeTasks(
@@ -138,7 +196,7 @@ export function categorizeTasks(
     if (task.checked || !task.content?.trim()) continue;
 
     const dueStr = task.due?.date ?? null;
-    const due = dueStr ? new Date(dueStr) : null;
+    const due = dueStr ? parseLocalDate(dueStr) : null;
     const dueDay = due ? startOfDay(due) : null;
 
     const item: TaskItem = {
@@ -151,6 +209,8 @@ export function categorizeTasks(
       assigneeName: task.responsible_uid
         ? collabMap.get(task.responsible_uid) ?? 'Unknown'
         : null,
+      isRecurring: task.due?.is_recurring ?? false,
+      dueString: task.due?.string ?? null,
     };
 
     if (!dueDay) {

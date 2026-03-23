@@ -50,6 +50,8 @@ export default function App() {
     configured,
     collaborators,
     reassign,
+    changeDue,
+    addTask,
     refresh,
     lastUpdated,
   } = useTasks();
@@ -142,6 +144,7 @@ export default function App() {
               collaborators={collaborators}
               assigneeFilter={assigneeFilter}
               onAssigneeFilter={setAssigneeFilter}
+              onAddTask={addTask}
             />
 
             {error && (
@@ -163,6 +166,7 @@ export default function App() {
                 emptyMessage="All caught up!"
                 collaborators={collaborators}
                 onReassign={reassign}
+                onUpdateDue={changeDue}
               />
               <TaskSection
                 title="Today"
@@ -172,6 +176,7 @@ export default function App() {
                 emptyMessage="No tasks for today"
                 collaborators={collaborators}
                 onReassign={reassign}
+                onUpdateDue={changeDue}
               />
               <TaskSection
                 title="Upcoming"
@@ -181,6 +186,7 @@ export default function App() {
                 emptyMessage="Nothing upcoming"
                 collaborators={collaborators}
                 onReassign={reassign}
+                onUpdateDue={changeDue}
               />
             </main>
           </>
