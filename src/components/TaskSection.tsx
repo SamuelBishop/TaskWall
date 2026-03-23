@@ -1,4 +1,4 @@
-import type { TaskItem } from '../types';
+import type { TaskItem, Collaborator } from '../types';
 import TaskCard from './TaskCard';
 
 interface TaskSectionProps {
@@ -7,6 +7,8 @@ interface TaskSectionProps {
   variant: 'overdue' | 'today' | 'upcoming';
   icon: string;
   emptyMessage: string;
+  collaborators: Collaborator[];
+  onReassign: (taskId: string, assigneeId: string | null) => void;
 }
 
 const headerStyles = {
@@ -27,10 +29,11 @@ export default function TaskSection({
   variant,
   icon,
   emptyMessage,
+  collaborators,
+  onReassign,
 }: TaskSectionProps) {
   return (
     <div className="flex flex-col h-full min-w-0">
-      {/* Section Header */}
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
           <span className="text-lg">{icon}</span>
@@ -49,7 +52,6 @@ export default function TaskSection({
         )}
       </div>
 
-      {/* Task List */}
       <div className="flex-1 overflow-y-auto pr-1 min-h-0">
         {tasks.length === 0 ? (
           <div className="flex items-center justify-center h-24 text-wall-muted text-sm">
@@ -57,7 +59,13 @@ export default function TaskSection({
           </div>
         ) : (
           tasks.map((task) => (
-            <TaskCard key={task.id} task={task} variant={variant} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              variant={variant}
+              collaborators={collaborators}
+              onReassign={onReassign}
+            />
           ))
         )}
       </div>
