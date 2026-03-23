@@ -131,7 +131,7 @@ export default function App() {
           transformOrigin: 'center center',
         }}
       >
-        <div className="w-[1280px] h-[720px] bg-wall-bg overflow-hidden flex flex-col rounded-lg shadow-xl border border-wall-border">
+        <div id="taskwall-root" className="relative w-[1280px] h-[720px] bg-wall-bg overflow-hidden flex flex-col rounded-lg shadow-xl border border-wall-border">
         {!configured ? (
           <SetupScreen
             error={error}

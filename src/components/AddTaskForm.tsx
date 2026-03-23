@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { Collaborator } from '../types';
 import Popover from './Popover';
 import RecurrencePicker from './RecurrencePicker';
+import OnScreenKeyboard from './OnScreenKeyboard';
 
 interface AddTaskFormProps {
   collaborators: Collaborator[];
@@ -14,6 +15,7 @@ interface AddTaskFormProps {
 
 export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) {
   const [open, setOpen] = useState(false);
+  const [kbOpen, setKbOpen] = useState(false);
   const [content, setContent] = useState('');
   const [date, setDate] = useState('');
   const [recurrence, setRecurrence] = useState('');
@@ -58,20 +60,27 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
         + Task
       </button>
 
-      <Popover open={open} onClose={() => setOpen(false)} className="right-0 top-7 p-4 w-[280px]">
+      <Popover open={open} onClose={() => setOpen(false)} className="right-0 top-7 p-4 w-[340px]">
         <div className="space-y-3">
           <div>
             <label className="block text-xs text-wall-muted font-medium mb-1">Task</label>
             <input
               type="text"
               value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="What needs to be done?"
-              className="w-full text-sm border border-wall-border rounded px-2 py-1.5 text-wall-text bg-white placeholder:text-gray-300"
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
-              autoFocus
+              onClick={() => setKbOpen(true)}
+              placeholder="Tap to type task name…"
+              className="w-full text-sm border border-wall-border rounded px-2 py-1.5 text-wall-text bg-white placeholder:text-gray-300 cursor-pointer"
+              readOnly
             />
           </div>
+
+          {kbOpen && (
+            <OnScreenKeyboard
+              value={content}
+              onChange={setContent}
+              onClose={() => setKbOpen(false)}
+            />
+          )}
 
           <div>
             <label className="block text-xs text-wall-muted font-medium mb-1">Due date</label>
