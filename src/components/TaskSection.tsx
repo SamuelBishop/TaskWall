@@ -5,7 +5,7 @@ import { useDragScroll } from '../hooks/useDragScroll';
 interface TaskSectionProps {
   title: string;
   tasks: TaskItem[];
-  variant: 'overdue' | 'today' | 'upcoming';
+  variant: 'overdue' | 'today' | 'upcoming' | 'future';
   icon: string;
   emptyMessage: string;
   collaborators: Collaborator[];
@@ -18,12 +18,14 @@ const headerStyles = {
   overdue: 'text-wall-overdue',
   today: 'text-wall-today',
   upcoming: 'text-wall-muted',
+  future: 'text-wall-muted',
 };
 
 const countStyles = {
   overdue: 'bg-wall-overdue/20 text-wall-overdue',
   today: 'bg-wall-today/20 text-wall-today',
   upcoming: 'bg-wall-upcoming/20 text-wall-muted',
+  future: 'bg-wall-upcoming/20 text-wall-muted',
 };
 
 export default function TaskSection({

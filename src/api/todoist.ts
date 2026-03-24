@@ -200,6 +200,7 @@ export function categorizeTasks(
     overdue: [],
     today: [],
     upcoming: [],
+    future: [],
   };
 
   for (const task of tasks) {
@@ -235,6 +236,9 @@ export function categorizeTasks(
     } else if (dueDay < weekEnd) {
       item.category = 'upcoming';
       result.upcoming.push(item);
+    } else {
+      item.category = 'future';
+      result.future.push(item);
     }
   }
 
@@ -250,6 +254,7 @@ export function categorizeTasks(
   result.overdue.sort(sortByDue);
   result.today.sort(sortByDue);
   result.upcoming.sort(sortByDue);
+  result.future.sort(sortByDue);
 
   return result;
 }

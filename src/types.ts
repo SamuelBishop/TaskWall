@@ -39,7 +39,7 @@ export interface TaskItem {
   title: string;
   due: Date | null;
   priority: number;
-  category: 'overdue' | 'today' | 'upcoming' | 'no-date';
+  category: 'overdue' | 'today' | 'upcoming' | 'future' | 'no-date';
   assigneeId: string | null;
   assigneeName: string | null;
   isRecurring: boolean;
@@ -50,4 +50,5 @@ export interface TaskGroup {
   overdue: TaskItem[];
   today: TaskItem[];
   upcoming: TaskItem[];
+  future: TaskItem[];
 }

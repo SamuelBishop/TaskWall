@@ -60,7 +60,7 @@ export default function App() {
   const [mode, setMode] = useState<ViewMode>('full');
   const [scale, setScale] = useState(() => loadSavedScale() ?? getDefaultScale());
   const [assigneeFilter, setAssigneeFilter] = useState<string | null>(null);
-  const [page, setPage] = useState<'main' | 'overdue'>('main');
+  const [page, setPage] = useState<'main' | 'overdue' | 'future'>('main');
 
   // Persist calibrated scale
   useEffect(() => {
@@ -134,11 +134,15 @@ export default function App() {
               {page === 'main' ? (
                 <main className="flex-1 grid grid-cols-2 gap-6 px-8 py-5 min-h-0 overflow-hidden">
                   <TaskSection title="Today" tasks={filterTasks(tasks?.today ?? [])} variant="today" icon="📋" emptyMessage="No tasks for today" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
-                  <TaskSection title="Upcoming" tasks={filterTasks(tasks?.upcoming ?? [])} variant="upcoming" icon="📅" emptyMessage="Nothing upcoming" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                  <TaskSection title="Upcoming (7 Days)" tasks={filterTasks(tasks?.upcoming ?? [])} variant="upcoming" icon="📅" emptyMessage="Nothing upcoming" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                </main>
+              ) : page === 'overdue' ? (
+                <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
+                  <TaskSection title="Overdue" tasks={filterTasks(tasks?.overdue ?? [])} variant="overdue" icon="🔴" emptyMessage="All caught up!" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
                 </main>
               ) : (
-                <main className="flex-1 px-8 py-5 min-h-0 overflow-hidden">
-                  <TaskSection title="Overdue" tasks={filterTasks(tasks?.overdue ?? [])} variant="overdue" icon="🔴" emptyMessage="All caught up!" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
+                  <TaskSection title="Future" tasks={filterTasks(tasks?.future ?? [])} variant="future" icon="🔮" emptyMessage="Nothing planned" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
                 </main>
               )}
             </>
@@ -238,7 +242,7 @@ export default function App() {
                 onDelete={removeTask}
               />
               <TaskSection
-                title="Upcoming"
+                title="Upcoming (7 Days)"
                 tasks={filterTasks(tasks?.upcoming ?? [])}
                 variant="upcoming"
                 icon="📅"
@@ -249,14 +253,28 @@ export default function App() {
                 onDelete={removeTask}
               />
             </main>
-            ) : (
-            <main className="flex-1 px-8 py-5 min-h-0 overflow-hidden">
+            ) : page === 'overdue' ? (
+            <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
               <TaskSection
                 title="Overdue"
                 tasks={filterTasks(tasks?.overdue ?? [])}
                 variant="overdue"
                 icon="🔴"
                 emptyMessage="All caught up!"
+                collaborators={collaborators}
+                onReassign={reassign}
+                onUpdateDue={changeDue}
+                onDelete={removeTask}
+              />
+            </main>
+            ) : (
+            <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
+              <TaskSection
+                title="Future"
+                tasks={filterTasks(tasks?.future ?? [])}
+                variant="future"
+                icon="🔮"
+                emptyMessage="Nothing planned"
                 collaborators={collaborators}
                 onReassign={reassign}
                 onUpdateDue={changeDue}

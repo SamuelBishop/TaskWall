@@ -16,8 +16,8 @@ interface HeaderProps {
     due?: { date?: string; string?: string };
     assignee_id?: string | null;
   }) => Promise<void>;
-  page: 'main' | 'overdue';
-  onPageChange: (page: 'main' | 'overdue') => void;
+  page: 'main' | 'overdue' | 'future';
+  onPageChange: (page: 'main' | 'overdue' | 'future') => void;
 }
 
 export default function Header({
@@ -55,13 +55,32 @@ export default function Header({
       </div>
 
       <div className="flex items-center gap-3">
-        <button
-          onClick={() => onPageChange(page === 'main' ? 'overdue' : 'main')}
-          className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
-          title={page === 'main' ? 'View overdue tasks' : 'Back to main'}
-        >
-          {page === 'main' ? 'Overdue' : '← Main'}
-        </button>
+        {page === 'main' ? (
+          <>
+            <button
+              onClick={() => onPageChange('overdue')}
+              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+              title="View overdue tasks"
+            >
+              Overdue
+            </button>
+            <button
+              onClick={() => onPageChange('future')}
+              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+              title="View future tasks"
+            >
+              Future
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => onPageChange('main')}
+            className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+            title="Back to main"
+          >
+            ← Main
+          </button>
+        )}
 
         <AddTaskForm collaborators={collaborators} onAdd={onAddTask} />
 

@@ -6,7 +6,7 @@ import RecurrencePicker from './RecurrencePicker';
 
 interface TaskCardProps {
   task: TaskItem;
-  variant: 'overdue' | 'today' | 'upcoming';
+  variant: 'overdue' | 'today' | 'upcoming' | 'future';
   collaborators: Collaborator[];
   onReassign: (taskId: string, assigneeId: string | null) => void;
   onUpdateDue: (taskId: string, due: { date?: string; string?: string } | null) => void;
@@ -23,6 +23,10 @@ const variantStyles = {
     dateBadge: 'text-wall-today',
   },
   upcoming: {
+    border: 'border-l-wall-upcoming',
+    dateBadge: 'text-wall-muted',
+  },
+  future: {
     border: 'border-l-wall-upcoming',
     dateBadge: 'text-wall-muted',
   },
