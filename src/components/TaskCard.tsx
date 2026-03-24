@@ -3,6 +3,7 @@ import type { TaskItem, Collaborator } from '../types';
 import { formatDate, daysUntil } from '../utils/date';
 import Popover from './Popover';
 import RecurrencePicker from './RecurrencePicker';
+import DatePicker from './DatePicker';
 
 interface TaskCardProps {
   task: TaskItem;
@@ -78,9 +79,11 @@ export default function TaskCard({
     setDateOpen(false);
   }, [task.id, onUpdateDue]);
 
+  const anyPopoverOpen = assigneeOpen || dateOpen;
+
   return (
     <div
-      className={`task-card border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3.5 mb-2.5 animate-slide-in transition-all hover:shadow-md`}
+      className={`task-card border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3.5 mb-2.5 animate-slide-in transition-all hover:shadow-md${anyPopoverOpen ? ' popover-open' : ''}`}
     >
       <div className="flex items-start justify-between gap-2">
         <p className="text-wall-text text-base font-medium leading-snug truncate flex-1">
@@ -152,12 +155,10 @@ export default function TaskCard({
           <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-5 w-[400px]">
             <div className="space-y-4">
               <label className="block text-sm text-wall-muted font-medium">Due date</label>
-              <input
-                type="date"
+              <DatePicker
                 value={dateValue}
-                onClick={(e) => e.currentTarget.showPicker()}
-                onChange={(e) => { setDateValue(e.target.value); setRecurrence(''); }}
-                className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white cursor-pointer"
+                onChange={(v) => { setDateValue(v); setRecurrence(''); }}
+                placeholder="Pick a date"
               />
               <RecurrencePicker value={recurrence} onChange={setRecurrence} />
               <div className="flex gap-3 pt-2">

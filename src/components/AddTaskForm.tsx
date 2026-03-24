@@ -3,6 +3,7 @@ import type { Collaborator } from '../types';
 import Popover from './Popover';
 import RecurrencePicker from './RecurrencePicker';
 import OnScreenKeyboard from './OnScreenKeyboard';
+import DatePicker from './DatePicker';
 
 interface AddTaskFormProps {
   collaborators: Collaborator[];
@@ -84,12 +85,10 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
 
           <div>
             <label className="block text-sm text-wall-muted font-medium mb-1.5">Due date</label>
-            <input
-              type="date"
+            <DatePicker
               value={date}
-              onClick={(e) => e.currentTarget.showPicker()}
-              onChange={(e) => { setDate(e.target.value); setRecurrence(''); }}
-              className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white cursor-pointer"
+              onChange={(v) => { setDate(v); setRecurrence(''); }}
+              placeholder="Pick a date"
             />
           </div>
 
