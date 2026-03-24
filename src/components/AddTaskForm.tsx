@@ -54,22 +54,22 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="text-xs font-medium text-wall-today hover:text-blue-700 transition-colors"
+        className="min-h-[44px] px-4 text-base font-medium text-wall-today hover:text-blue-700 transition-colors rounded-lg hover:bg-wall-surface"
         title="Add a new task"
       >
         + Task
       </button>
 
-      <Popover open={open} onClose={() => setOpen(false)} className="right-0 top-7 p-4 w-[340px]">
-        <div className="space-y-3">
+      <Popover open={open} onClose={() => setOpen(false)} className="right-0 top-12 p-5 w-[400px]">
+        <div className="space-y-4">
           <div>
-            <label className="block text-xs text-wall-muted font-medium mb-1">Task</label>
+            <label className="block text-sm text-wall-muted font-medium mb-1.5">Task</label>
             <input
               type="text"
               value={content}
               onClick={() => setKbOpen(true)}
               placeholder="Tap to type task name…"
-              className="w-full text-sm border border-wall-border rounded px-2 py-1.5 text-wall-text bg-white placeholder:text-gray-300 cursor-pointer"
+              className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white placeholder:text-gray-300 cursor-pointer"
               readOnly
             />
           </div>
@@ -83,12 +83,12 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
           )}
 
           <div>
-            <label className="block text-xs text-wall-muted font-medium mb-1">Due date</label>
+            <label className="block text-sm text-wall-muted font-medium mb-1.5">Due date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => { setDate(e.target.value); setRecurrence(''); }}
-              className="w-full text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white"
+              className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
             />
           </div>
 
@@ -96,11 +96,11 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
 
           {collaborators.length > 0 && (
             <div>
-              <label className="block text-xs text-wall-muted font-medium mb-1">Assign to</label>
+              <label className="block text-sm text-wall-muted font-medium mb-1.5">Assign to</label>
               <select
                 value={assignee}
                 onChange={(e) => setAssignee(e.target.value)}
-                className="w-full text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white"
+                className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
               >
                 <option value="">Unassigned</option>
                 {collaborators.map((c) => (
@@ -113,7 +113,7 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
           <button
             onClick={handleSubmit}
             disabled={!content.trim() || submitting}
-            className="w-full text-sm bg-wall-today text-white rounded px-2 py-1.5 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full text-base bg-wall-today text-white rounded-lg px-3 py-3 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {submitting ? 'Adding…' : 'Add Task'}
           </button>

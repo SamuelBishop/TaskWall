@@ -60,12 +60,12 @@ export default function RecurrencePicker({ value, onChange }: RecurrencePickerPr
   );
 
   return (
-    <div className="space-y-2">
-      <label className="block text-xs text-wall-muted font-medium">Repeat</label>
+    <div className="space-y-3">
+      <label className="block text-sm text-wall-muted font-medium">Repeat</label>
       <select
         value={freq}
         onChange={(e) => update(e.target.value, interval, e.target.value === 'week' ? day : '')}
-        className="w-full text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white"
+        className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
       >
         {FREQUENCIES.map((f) => (
           <option key={f.value} value={f.value}>{f.label}</option>
@@ -73,18 +73,18 @@ export default function RecurrencePicker({ value, onChange }: RecurrencePickerPr
       </select>
 
       {freq && (
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-wall-muted whitespace-nowrap">Every</label>
+        <div className="flex items-center gap-3">
+          <label className="text-sm text-wall-muted whitespace-nowrap">Every</label>
           <select
             value={interval}
             onChange={(e) => update(freq, parseInt(e.target.value), day)}
-            className="text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white w-16"
+            className="text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white w-20"
           >
             {[1, 2, 3, 4, 5, 6, 7, 8, 10, 12].map((n) => (
               <option key={n} value={n}>{n}</option>
             ))}
           </select>
-          <span className="text-xs text-wall-muted">
+          <span className="text-sm text-wall-muted">
             {interval > 1 ? `${freq}s` : freq}
           </span>
         </div>
@@ -92,11 +92,11 @@ export default function RecurrencePicker({ value, onChange }: RecurrencePickerPr
 
       {freq === 'week' && (
         <div>
-          <label className="block text-xs text-wall-muted font-medium mb-1">On day</label>
+          <label className="block text-sm text-wall-muted font-medium mb-1.5">On day</label>
           <select
             value={day}
             onChange={(e) => update(freq, interval, e.target.value)}
-            className="w-full text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white"
+            className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
           >
             <option value="">Same day each week</option>
             {DAYS.map((d) => (

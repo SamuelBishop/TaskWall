@@ -40,16 +40,16 @@ export default function TaskSection({
     <div className="flex flex-col min-w-0 min-h-0 overflow-hidden">
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-lg">{icon}</span>
+          <span className="text-xl">{icon}</span>
           <h2
-            className={`text-base font-semibold uppercase tracking-wider ${headerStyles[variant]}`}
+            className={`text-lg font-semibold uppercase tracking-wider ${headerStyles[variant]}`}
           >
             {title}
           </h2>
         </div>
         {tasks.length > 0 && (
           <span
-            className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${countStyles[variant]}`}
+            className={`text-sm font-bold px-3 py-1 rounded-full ${countStyles[variant]}`}
           >
             {tasks.length}
           </span>

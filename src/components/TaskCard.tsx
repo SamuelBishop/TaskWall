@@ -76,19 +76,19 @@ export default function TaskCard({
 
   return (
     <div
-      className={`border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3 mb-2.5 transition-colors`}
+      className={`border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3.5 mb-2.5 transition-colors`}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-wall-text text-[15px] font-medium leading-snug truncate flex-1">
+        <p className="text-wall-text text-base font-medium leading-snug truncate flex-1">
           {task.title}
         </p>
 
         {/* Assignee badge + delete */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
           <div className="relative">
             <button
               onClick={() => setAssigneeOpen((o) => !o)}
-              className={`text-[11px] px-2 py-0.5 rounded-full border transition-colors ${
+              className={`min-h-[40px] min-w-[40px] text-sm px-3 py-1.5 rounded-full border transition-colors ${
                 task.assigneeName
                   ? 'bg-wall-today/10 text-wall-today border-wall-today/20 hover:bg-wall-today/20'
                   : 'bg-gray-100 text-wall-muted border-gray-200 hover:bg-gray-200'
@@ -98,10 +98,10 @@ export default function TaskCard({
               {task.assigneeName ? getFirstName(task.assigneeName) : '—'}
             </button>
 
-            <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-7 py-1 min-w-[160px]">
+            <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-11 py-2 min-w-[200px]">
               <button
                 onClick={() => { onReassign(task.id, null); setAssigneeOpen(false); }}
-                className={`w-full text-left px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
                   !task.assigneeId ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -111,7 +111,7 @@ export default function TaskCard({
                 <button
                   key={c.id}
                   onClick={() => { onReassign(task.id, c.id); setAssigneeOpen(false); }}
-                  className={`w-full text-left px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors ${
+                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
                     task.assigneeId === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
                   }`}
                 >
@@ -123,7 +123,7 @@ export default function TaskCard({
 
           <button
             onClick={() => onDelete(task.id)}
-            className="text-[11px] px-1.5 py-0.5 rounded-full border border-gray-200 bg-gray-100 text-wall-muted hover:bg-red-50 hover:text-wall-overdue hover:border-wall-overdue/30 transition-colors"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-sm rounded-full border border-gray-200 bg-gray-100 text-wall-muted hover:bg-red-50 hover:text-wall-overdue hover:border-wall-overdue/30 transition-colors"
             title="Delete task"
           >
             ✕
@@ -140,31 +140,31 @@ export default function TaskCard({
               setDateValue(toDateInputValue(task.due));
               setRecurrence(task.isRecurring && task.dueString ? task.dueString : '');
             }}
-            className={`text-xs ${styles.dateBadge} hover:underline whitespace-nowrap`}
+            className={`text-sm min-h-[36px] px-2 ${styles.dateBadge} hover:underline whitespace-nowrap`}
           >
             {formatDate(task.due)}
           </button>
 
-          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-6 p-3 min-w-[260px]">
-            <div className="space-y-2">
-              <label className="block text-xs text-wall-muted font-medium">Due date</label>
+          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-4 min-w-[320px]">
+            <div className="space-y-3">
+              <label className="block text-sm text-wall-muted font-medium">Due date</label>
               <input
                 type="date"
                 value={dateValue}
                 onChange={(e) => { setDateValue(e.target.value); setRecurrence(''); }}
-                className="w-full text-sm border border-wall-border rounded px-2 py-1 text-wall-text bg-white"
+                className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
               />
               <RecurrencePicker value={recurrence} onChange={setRecurrence} />
-              <div className="flex gap-2 pt-1">
+              <div className="flex gap-3 pt-1">
                 <button
                   onClick={handleDateSave}
-                  className="flex-1 text-xs bg-wall-today text-white rounded px-2 py-1 hover:bg-blue-700 transition-colors"
+                  className="flex-1 text-base bg-wall-today text-white rounded-lg px-3 py-2.5 hover:bg-blue-700 transition-colors font-medium"
                 >
                   Save
                 </button>
                 <button
                   onClick={handleClearDate}
-                  className="text-xs text-wall-muted hover:text-wall-overdue px-2 py-1 transition-colors"
+                  className="text-base text-wall-muted hover:text-wall-overdue px-3 py-2.5 transition-colors"
                 >
                   Clear
                 </button>

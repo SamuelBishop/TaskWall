@@ -16,6 +16,8 @@ interface HeaderProps {
     due?: { date?: string; string?: string };
     assignee_id?: string | null;
   }) => Promise<void>;
+  page: 'main' | 'overdue';
+  onPageChange: (page: 'main' | 'overdue') => void;
 }
 
 export default function Header({
@@ -26,6 +28,8 @@ export default function Header({
   assigneeFilter,
   onAssigneeFilter,
   onAddTask,
+  page,
+  onPageChange,
 }: HeaderProps) {
   const now = new Date();
   const [filterOpen, setFilterOpen] = useState(false);
@@ -37,34 +41,42 @@ export default function Header({
       : 'All';
 
   return (
-    <header className="flex items-center justify-between px-8 py-4 border-b border-wall-border">
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-bold text-wall-text tracking-tight">
+    <header className="flex items-center justify-between px-8 py-5 border-b border-wall-border">
+      <div className="flex items-center gap-4">
+        <h1 className="text-3xl font-bold text-wall-text tracking-tight">
           TaskWall
         </h1>
       </div>
 
       <div className="text-center">
-        <p className="text-lg font-medium text-wall-text">
+        <p className="text-xl font-medium text-wall-text">
           {formatFullDate(now)}
         </p>
       </div>
 
       <div className="flex items-center gap-3">
+        <button
+          onClick={() => onPageChange(page === 'main' ? 'overdue' : 'main')}
+          className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+          title={page === 'main' ? 'View overdue tasks' : 'Back to main'}
+        >
+          {page === 'main' ? 'Overdue' : '← Main'}
+        </button>
+
         <AddTaskForm collaborators={collaborators} onAdd={onAddTask} />
 
         {collaborators.length > 0 && (
           <div className="relative">
             <button
               onClick={() => setFilterOpen((o) => !o)}
-              className="text-[11px] px-2 py-0.5 rounded border border-wall-border bg-wall-surface text-wall-text hover:bg-gray-100 transition-colors"
+              className="min-h-[44px] text-sm px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text hover:bg-gray-100 transition-colors"
             >
               {selectedLabel} ▾
             </button>
-            <Popover open={filterOpen} onClose={() => setFilterOpen(false)} className="right-0 top-6 py-1 min-w-[120px]">
+            <Popover open={filterOpen} onClose={() => setFilterOpen(false)} className="right-0 top-12 py-2 min-w-[200px]">
               <button
                 onClick={() => { onAssigneeFilter(null); setFilterOpen(false); }}
-                className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
                   !assigneeFilter ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -72,7 +84,7 @@ export default function Header({
               </button>
               <button
                 onClick={() => { onAssigneeFilter('__unassigned__'); setFilterOpen(false); }}
-                className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
                   assigneeFilter === '__unassigned__' ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -82,7 +94,7 @@ export default function Header({
                 <button
                   key={c.id}
                   onClick={() => { onAssigneeFilter(c.id); setFilterOpen(false); }}
-                  className={`w-full text-left px-3 py-1 text-xs hover:bg-gray-50 transition-colors ${
+                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
                     assigneeFilter === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
                   }`}
                 >
@@ -94,18 +106,18 @@ export default function Header({
         )}
 
         {lastUpdated && (
-          <span className="text-xs text-wall-muted">
+          <span className="text-sm text-wall-muted">
             Updated {formatTime(lastUpdated)}
           </span>
         )}
         {loading && (
-          <span className="text-xs text-wall-today animate-pulse">
+          <span className="text-sm text-wall-today animate-pulse">
             Syncing…
           </span>
         )}
         <button
           onClick={onRefresh}
-          className="text-wall-muted hover:text-wall-text text-sm transition-colors"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text text-xl transition-colors rounded-lg hover:bg-wall-surface"
           title="Refresh tasks"
         >
           ↻

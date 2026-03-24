@@ -60,6 +60,7 @@ export default function App() {
   const [mode, setMode] = useState<ViewMode>('full');
   const [scale, setScale] = useState(() => loadSavedScale() ?? getDefaultScale());
   const [assigneeFilter, setAssigneeFilter] = useState<string | null>(null);
+  const [page, setPage] = useState<'main' | 'overdue'>('main');
 
   // Persist calibrated scale
   useEffect(() => {
@@ -121,6 +122,8 @@ export default function App() {
                 assigneeFilter={assigneeFilter}
                 onAssigneeFilter={setAssigneeFilter}
                 onAddTask={addTask}
+                page={page}
+                onPageChange={setPage}
               />
               {error && (
                 <ErrorBanner
@@ -128,11 +131,16 @@ export default function App() {
                   onDismiss={() => refresh()}
                 />
               )}
-              <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] grid-rows-[1fr] gap-6 px-8 py-5 min-h-0 overflow-hidden">
-                <TaskSection title="Overdue" tasks={filterTasks(tasks?.overdue ?? [])} variant="overdue" icon="🔴" emptyMessage="All caught up!" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
-                <TaskSection title="Today" tasks={filterTasks(tasks?.today ?? [])} variant="today" icon="📋" emptyMessage="No tasks for today" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
-                <TaskSection title="Upcoming" tasks={filterTasks(tasks?.upcoming ?? [])} variant="upcoming" icon="📅" emptyMessage="Nothing upcoming" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
-              </main>
+              {page === 'main' ? (
+                <main className="flex-1 grid grid-cols-2 gap-6 px-8 py-5 min-h-0 overflow-hidden">
+                  <TaskSection title="Today" tasks={filterTasks(tasks?.today ?? [])} variant="today" icon="📋" emptyMessage="No tasks for today" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                  <TaskSection title="Upcoming" tasks={filterTasks(tasks?.upcoming ?? [])} variant="upcoming" icon="📅" emptyMessage="Nothing upcoming" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                </main>
+              ) : (
+                <main className="flex-1 px-8 py-5 min-h-0 overflow-hidden">
+                  <TaskSection title="Overdue" tasks={filterTasks(tasks?.overdue ?? [])} variant="overdue" icon="🔴" emptyMessage="All caught up!" collaborators={collaborators} onReassign={reassign} onUpdateDue={changeDue} onDelete={removeTask} />
+                </main>
+              )}
             </>
           )}
         </div>
@@ -202,6 +210,8 @@ export default function App() {
               assigneeFilter={assigneeFilter}
               onAssigneeFilter={setAssigneeFilter}
               onAddTask={addTask}
+              page={page}
+              onPageChange={setPage}
             />
 
             {error && (
@@ -214,18 +224,8 @@ export default function App() {
               />
             )}
 
-            <main className="flex-1 grid grid-cols-[1fr_1.4fr_1fr] grid-rows-[1fr] gap-6 px-8 py-5 min-h-0 overflow-hidden">
-              <TaskSection
-                title="Overdue"
-                tasks={filterTasks(tasks?.overdue ?? [])}
-                variant="overdue"
-                icon="🔴"
-                emptyMessage="All caught up!"
-                collaborators={collaborators}
-                onReassign={reassign}
-                onUpdateDue={changeDue}
-                onDelete={removeTask}
-              />
+            {page === 'main' ? (
+            <main className="flex-1 grid grid-cols-2 gap-6 px-8 py-5 min-h-0 overflow-hidden">
               <TaskSection
                 title="Today"
                 tasks={filterTasks(tasks?.today ?? [])}
@@ -249,6 +249,21 @@ export default function App() {
                 onDelete={removeTask}
               />
             </main>
+            ) : (
+            <main className="flex-1 px-8 py-5 min-h-0 overflow-hidden">
+              <TaskSection
+                title="Overdue"
+                tasks={filterTasks(tasks?.overdue ?? [])}
+                variant="overdue"
+                icon="🔴"
+                emptyMessage="All caught up!"
+                collaborators={collaborators}
+                onReassign={reassign}
+                onUpdateDue={changeDue}
+                onDelete={removeTask}
+              />
+            </main>
+            )}
           </>
         )}
         </div>
