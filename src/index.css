@@ -36,18 +36,23 @@ html, body, #root {
   background: #b5afa8;
 }
 
-/* Make date picker inputs larger and always open picker on click */
+/* Normalize date input height to match text inputs */
 input[type="date"] {
-  min-height: 48px;
-  font-size: 1.125rem;
+  height: 44px;
+  box-sizing: border-box;
 }
 
 /* Enlarge the calendar icon hit target */
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  padding: 8px;
-  width: 28px;
-  height: 28px;
+  padding: 4px;
+  width: 24px;
+  height: 24px;
+}
+
+/* Match date text size to other inputs */
+input[type="date"]::-webkit-datetime-edit {
+  font-size: 1rem;
 }
 
 /* Task card hover wobble (all cards) */

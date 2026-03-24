@@ -149,8 +149,8 @@ export default function TaskCard({
             {formatDate(task.due)}
           </button>
 
-          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-4 min-w-[320px]">
-            <div className="space-y-3">
+          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-5 w-[400px]">
+            <div className="space-y-4">
               <label className="block text-sm text-wall-muted font-medium">Due date</label>
               <input
                 type="date"
@@ -160,10 +160,10 @@ export default function TaskCard({
                 className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white cursor-pointer"
               />
               <RecurrencePicker value={recurrence} onChange={setRecurrence} />
-              <div className="flex gap-3 pt-1">
+              <div className="flex gap-3 pt-2">
                 <button
                   onClick={handleDateSave}
-                  className="flex-1 text-base bg-wall-today text-white rounded-lg px-3 py-2.5 hover:bg-wall-today/80 transition-colors font-medium"
+                  className="flex-1 text-base bg-wall-today text-white rounded-lg px-3 py-3 hover:bg-wall-today/80 transition-colors font-medium"
                 >
                   Save
                 </button>
