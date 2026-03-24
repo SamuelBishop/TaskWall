@@ -54,7 +54,7 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="min-h-[44px] px-4 text-base font-medium text-wall-today hover:text-blue-700 transition-colors rounded-lg hover:bg-wall-surface"
+        className="min-h-[44px] px-4 text-base font-medium text-wall-today hover:text-blue-700 hover:scale-105 active:scale-95 transition-all rounded-lg hover:bg-wall-surface"
         title="Add a new task"
       >
         + Task
@@ -114,7 +114,7 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
           <button
             onClick={handleSubmit}
             disabled={!content.trim() || submitting}
-            className="w-full text-base bg-wall-today text-white rounded-lg px-3 py-3 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            className="w-full text-base bg-wall-today text-white rounded-lg px-3 py-3 hover:bg-wall-today/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {submitting ? 'Adding…' : 'Add Task'}
           </button>

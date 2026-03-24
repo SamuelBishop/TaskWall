@@ -22,10 +22,10 @@ const headerStyles = {
 };
 
 const countStyles = {
-  overdue: 'bg-wall-overdue/20 text-wall-overdue',
-  today: 'bg-wall-today/20 text-wall-today',
-  upcoming: 'bg-wall-upcoming/20 text-wall-muted',
-  future: 'bg-wall-upcoming/20 text-wall-muted',
+  overdue: 'bg-wall-overdue/20 text-wall-overdue border border-wall-overdue/40 animate-heartbeat',
+  today: 'bg-wall-today/20 text-wall-today border border-wall-today/40',
+  upcoming: 'bg-wall-upcoming/20 text-wall-muted border border-wall-upcoming/40',
+  future: 'bg-wall-upcoming/20 text-wall-muted border border-wall-upcoming/40',
 };
 
 export default function TaskSection({
@@ -45,7 +45,7 @@ export default function TaskSection({
     <div className="flex flex-col min-w-0 min-h-0 overflow-hidden">
       <div className="flex items-center justify-between mb-4 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-xl">{icon}</span>
+          <span className={`text-xl ${variant === 'overdue' ? 'animate-stare' : 'animate-float'}`}>{icon}</span>
           <h2
             className={`text-lg font-semibold uppercase tracking-wider ${headerStyles[variant]}`}
           >
@@ -54,7 +54,7 @@ export default function TaskSection({
         </div>
         {tasks.length > 0 && (
           <span
-            className={`text-sm font-bold px-3 py-1 rounded-full ${countStyles[variant]}`}
+            className={`text-sm font-bold px-3 py-1 rounded-full animate-pop-in ${countStyles[variant]}`}
           >
             {tasks.length}
           </span>

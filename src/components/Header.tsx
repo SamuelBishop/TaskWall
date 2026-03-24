@@ -59,14 +59,14 @@ export default function Header({
           <>
             <button
               onClick={() => onPageChange('overdue')}
-              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
               title="View overdue tasks"
             >
               Overdue
             </button>
             <button
               onClick={() => onPageChange('future')}
-              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
               title="View future tasks"
             >
               Future
@@ -75,7 +75,7 @@ export default function Header({
         ) : (
           <button
             onClick={() => onPageChange('main')}
-            className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 transition-colors"
+            className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-gray-100 hover:scale-105 active:scale-95 transition-all"
             title="Back to main"
           >
             ← Main
@@ -88,14 +88,14 @@ export default function Header({
           <div className="relative">
             <button
               onClick={() => setFilterOpen((o) => !o)}
-              className="min-h-[44px] text-sm px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text hover:bg-gray-100 transition-colors"
+              className="min-h-[44px] text-sm px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
             >
               {selectedLabel} ▾
             </button>
             <Popover open={filterOpen} onClose={() => setFilterOpen(false)} className="right-0 top-12 py-2 min-w-[200px]">
               <button
                 onClick={() => { onAssigneeFilter(null); setFilterOpen(false); }}
-                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
                   !assigneeFilter ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -103,7 +103,7 @@ export default function Header({
               </button>
               <button
                 onClick={() => { onAssigneeFilter('__unassigned__'); setFilterOpen(false); }}
-                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
                   assigneeFilter === '__unassigned__' ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -113,7 +113,7 @@ export default function Header({
                 <button
                   key={c.id}
                   onClick={() => { onAssigneeFilter(c.id); setFilterOpen(false); }}
-                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
+                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
                     assigneeFilter === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
                   }`}
                 >
@@ -136,7 +136,7 @@ export default function Header({
         )}
         <button
           onClick={onRefresh}
-          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text text-xl transition-colors rounded-lg hover:bg-wall-surface"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text text-xl hover:rotate-180 transition-all duration-500 rounded-lg hover:bg-wall-surface"
           title="Refresh tasks"
         >
           ↻

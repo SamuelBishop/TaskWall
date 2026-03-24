@@ -80,7 +80,7 @@ export default function TaskCard({
 
   return (
     <div
-      className={`border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3.5 mb-2.5 transition-colors`}
+      className={`task-card border-l-[3px] ${styles.border} bg-wall-surface rounded-r-lg px-4 py-3.5 mb-2.5 animate-slide-in transition-all hover:shadow-md`}
     >
       <div className="flex items-start justify-between gap-2">
         <p className="text-wall-text text-base font-medium leading-snug truncate flex-1">
@@ -95,7 +95,7 @@ export default function TaskCard({
               className={`min-h-[40px] min-w-[40px] text-sm px-3 py-1.5 rounded-full border transition-colors ${
                 task.assigneeName
                   ? 'bg-wall-today/10 text-wall-today border-wall-today/20 hover:bg-wall-today/20'
-                  : 'bg-gray-100 text-wall-muted border-gray-200 hover:bg-gray-200'
+                  : 'bg-wall-surface text-wall-muted border-wall-border hover:bg-wall-border/50'
               }`}
               title={task.assigneeName ? `Assigned to ${task.assigneeName}` : 'Unassigned — click to assign'}
             >
@@ -105,7 +105,7 @@ export default function TaskCard({
             <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-11 py-2 min-w-[200px]">
               <button
                 onClick={() => { onReassign(task.id, null); setAssigneeOpen(false); }}
-                className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
+                className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
                   !task.assigneeId ? 'text-wall-today font-medium' : 'text-wall-text'
                 }`}
               >
@@ -115,7 +115,7 @@ export default function TaskCard({
                 <button
                   key={c.id}
                   onClick={() => { onReassign(task.id, c.id); setAssigneeOpen(false); }}
-                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-gray-50 transition-colors ${
+                  className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
                     task.assigneeId === c.id ? 'text-wall-today font-medium' : 'text-wall-text'
                   }`}
                 >
@@ -127,7 +127,7 @@ export default function TaskCard({
 
           <button
             onClick={() => onDelete(task.id)}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-sm rounded-full border border-gray-200 bg-gray-100 text-wall-muted hover:bg-red-50 hover:text-wall-overdue hover:border-wall-overdue/30 transition-colors"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-sm rounded-full border border-wall-border bg-wall-surface text-wall-muted hover:bg-wall-overdue/10 hover:text-wall-overdue hover:border-wall-overdue/30 transition-colors"
             title="Delete task"
           >
             ✕
@@ -163,7 +163,7 @@ export default function TaskCard({
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={handleDateSave}
-                  className="flex-1 text-base bg-wall-today text-white rounded-lg px-3 py-2.5 hover:bg-blue-700 transition-colors font-medium"
+                  className="flex-1 text-base bg-wall-today text-white rounded-lg px-3 py-2.5 hover:bg-wall-today/80 transition-colors font-medium"
                 >
                   Save
                 </button>
