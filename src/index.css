@@ -35,3 +35,17 @@ html, body, #root {
 ::-webkit-scrollbar-thumb:hover {
   background: #a0a0a0;
 }
+
+/* Make date picker inputs larger and always open picker on click */
+input[type="date"] {
+  min-height: 48px;
+  font-size: 1.125rem;
+}
+
+/* Enlarge the calendar icon hit target */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  padding: 8px;
+  width: 28px;
+  height: 28px;
+}

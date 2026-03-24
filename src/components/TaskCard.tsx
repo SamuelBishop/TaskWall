@@ -151,8 +151,9 @@ export default function TaskCard({
               <input
                 type="date"
                 value={dateValue}
+                onClick={(e) => e.currentTarget.showPicker()}
                 onChange={(e) => { setDateValue(e.target.value); setRecurrence(''); }}
-                className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
+                className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white cursor-pointer"
               />
               <RecurrencePicker value={recurrence} onChange={setRecurrence} />
               <div className="flex gap-3 pt-1">

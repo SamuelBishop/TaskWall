@@ -1,5 +1,6 @@
 import type { TaskItem, Collaborator } from '../types';
 import TaskCard from './TaskCard';
+import { useDragScroll } from '../hooks/useDragScroll';
 
 interface TaskSectionProps {
   title: string;
@@ -36,6 +37,8 @@ export default function TaskSection({
   onUpdateDue,
   onDelete,
 }: TaskSectionProps) {
+  const scrollRef = useDragScroll<HTMLDivElement>();
+
   return (
     <div className="flex flex-col min-w-0 min-h-0 overflow-hidden">
       <div className="flex items-center justify-between mb-4 px-1">
@@ -56,7 +59,7 @@ export default function TaskSection({
         )}
       </div>
 
-      <div className="flex-1 overflow-y-auto min-h-0 pr-1">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 pr-1 select-none touch-pan-y cursor-grab active:cursor-grabbing">
         {tasks.length === 0 ? (
           <div className="flex items-center justify-center h-24 text-wall-muted text-sm">
             {emptyMessage}

@@ -87,8 +87,9 @@ export default function AddTaskForm({ collaborators, onAdd }: AddTaskFormProps) 
             <input
               type="date"
               value={date}
+              onClick={(e) => e.currentTarget.showPicker()}
               onChange={(e) => { setDate(e.target.value); setRecurrence(''); }}
-              className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white"
+              className="w-full text-base border border-wall-border rounded-lg px-3 py-2.5 text-wall-text bg-white cursor-pointer"
             />
           </div>
 

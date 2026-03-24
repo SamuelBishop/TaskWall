@@ -13,9 +13,13 @@ export default function Popover({ open, onClose, children, className = '' }: Pop
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        onClose();
-      }
+      // Skip if click is inside the popover itself
+      if (ref.current && ref.current.contains(e.target as Node)) return;
+      // Skip if click is on the trigger button (parent container of the popover)
+      // This prevents the race where outside-click closes then button-click re-opens
+      const parent = ref.current?.parentElement;
+      if (parent && parent.contains(e.target as Node)) return;
+      onClose();
     }
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
