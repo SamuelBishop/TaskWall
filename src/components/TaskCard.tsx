@@ -12,6 +12,7 @@ interface TaskCardProps {
   onReassign: (taskId: string, assigneeId: string | null) => void;
   onUpdateDue: (taskId: string, due: { date?: string; string?: string } | null) => void;
   onDelete: (taskId: string) => void;
+  onComplete: (taskId: string) => void;
 }
 
 const variantStyles = {
@@ -52,6 +53,7 @@ export default function TaskCard({
   onReassign,
   onUpdateDue,
   onDelete,
+  onComplete,
 }: TaskCardProps) {
   const styles = variantStyles[variant];
   const relative = daysUntil(task.due);
@@ -127,6 +129,14 @@ export default function TaskCard({
               ))}
             </Popover>
           </div>
+
+          <button
+            onClick={() => onComplete(task.id)}
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center text-sm rounded-full border border-wall-border bg-wall-surface text-wall-muted hover:bg-wall-today/10 hover:text-wall-today hover:border-wall-today/30 transition-colors"
+            title="Complete task"
+          >
+            ✓
+          </button>
 
           <button
             onClick={() => onDelete(task.id)}

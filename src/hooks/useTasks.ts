@@ -2,20 +2,23 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   fetchAllTasks,
   fetchCollaborators,
+  fetchCompletedTasks,
   categorizeTasks,
   updateTaskAssignee,
   updateTaskDue,
   createTask,
   deleteTask,
+  closeTask,
   isConfigured,
 } from '../api/todoist';
-import type { TaskGroup, Collaborator } from '../types';
+import type { TaskGroup, Collaborator, CompletedTaskItem } from '../types';
 import type { CreateTaskParams } from '../api/todoist';
 
 const REFRESH_INTERVAL = 5 * 60 * 1000;
 
 interface UseTasksResult {
   tasks: TaskGroup | null;
+  completedTasks: CompletedTaskItem[];
   loading: boolean;
   error: string | null;
   configured: boolean;
@@ -24,12 +27,14 @@ interface UseTasksResult {
   changeDue: (taskId: string, due: { date?: string; string?: string } | null) => Promise<void>;
   addTask: (params: CreateTaskParams) => Promise<void>;
   removeTask: (taskId: string) => Promise<void>;
+  completeTask: (taskId: string) => Promise<void>;
   refresh: () => Promise<void>;
   lastUpdated: Date | null;
 }
 
 export function useTasks(): UseTasksResult {
   const [tasks, setTasks] = useState<TaskGroup | null>(null);
+  const [completedTasks, setCompletedTasks] = useState<CompletedTaskItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -49,6 +54,8 @@ export function useTasks(): UseTasksResult {
       const rawTasks = await fetchAllTasks();
       const grouped = categorizeTasks(rawTasks, collabs);
       setTasks(grouped);
+      const completed = await fetchCompletedTasks();
+      setCompletedTasks(completed);
       setLastUpdated(new Date());
     } catch (err) {
       setError(
@@ -100,8 +107,17 @@ export function useTasks(): UseTasksResult {
     [loadTasks]
   );
 
+  const completeTask = useCallback(
+    async (taskId: string) => {
+      await closeTask(taskId);
+      await loadTasks();
+    },
+    [loadTasks]
+  );
+
   return {
     tasks,
+    completedTasks,
     loading,
     error,
     configured,
@@ -110,6 +126,7 @@ export function useTasks(): UseTasksResult {
     changeDue,
     addTask,
     removeTask,
+    completeTask,
     refresh: loadTasks,
     lastUpdated,
   };

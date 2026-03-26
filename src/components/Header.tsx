@@ -16,8 +16,8 @@ interface HeaderProps {
     due?: { date?: string; string?: string };
     assignee_id?: string | null;
   }) => Promise<void>;
-  page: 'main' | 'overdue' | 'future';
-  onPageChange: (page: 'main' | 'overdue' | 'future') => void;
+  page: 'main' | 'overdue' | 'future' | 'completed';
+  onPageChange: (page: 'main' | 'overdue' | 'future' | 'completed') => void;
 }
 
 export default function Header({
@@ -70,6 +70,13 @@ export default function Header({
               title="View future tasks"
             >
               Future
+            </button>
+            <button
+              onClick={() => onPageChange('completed')}
+              className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-wall-text text-base font-semibold hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
+              title="View completed tasks"
+            >
+              Completed
             </button>
           </>
         ) : (

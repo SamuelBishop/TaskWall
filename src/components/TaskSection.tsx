@@ -12,6 +12,7 @@ interface TaskSectionProps {
   onReassign: (taskId: string, assigneeId: string | null) => void;
   onUpdateDue: (taskId: string, due: { date?: string; string?: string } | null) => void;
   onDelete: (taskId: string) => void;
+  onComplete: (taskId: string) => void;
 }
 
 const headerStyles = {
@@ -38,6 +39,7 @@ export default function TaskSection({
   onReassign,
   onUpdateDue,
   onDelete,
+  onComplete,
 }: TaskSectionProps) {
   const scrollRef = useDragScroll<HTMLDivElement>();
 
@@ -76,6 +78,7 @@ export default function TaskSection({
               onReassign={onReassign}
               onUpdateDue={onUpdateDue}
               onDelete={onDelete}
+              onComplete={onComplete}
             />
           ))
         )}

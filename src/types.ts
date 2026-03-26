@@ -46,6 +46,12 @@ export interface TaskItem {
   dueString: string | null;
 }
 
+export interface CompletedTaskItem {
+  id: string;
+  title: string;
+  completedAt: Date;
+}
+
 export interface TaskGroup {
   overdue: TaskItem[];
   today: TaskItem[];

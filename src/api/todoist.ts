@@ -5,6 +5,7 @@ import type {
   CollaboratorsResponse,
   TaskItem,
   TaskGroup,
+  CompletedTaskItem,
 } from '../types';
 
 // In dev, requests go through Vite's proxy to avoid CORS.
@@ -117,6 +118,58 @@ export async function deleteTask(taskId: string): Promise<void> {
   await apiRequest(`/tasks/${taskId}`, {
     method: 'DELETE',
   });
+}
+
+export async function closeTask(taskId: string): Promise<void> {
+  await apiRequest(`/tasks/${taskId}/close`, {
+    method: 'POST',
+  });
+}
+
+export interface TodoistCompletedItem {
+  id: string;
+  content: string;
+  completed_at: string;
+  project_id: string;
+}
+
+export interface TodoistCompletedResponse {
+  items: TodoistCompletedItem[];
+  next_cursor: string | null;
+}
+
+export async function fetchCompletedTasks(): Promise<CompletedTaskItem[]> {
+  const projectId = import.meta.env.VITE_TODOIST_PROJECT_ID || null;
+  const now = new Date();
+  const weekAgo = new Date(now);
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const params = new URLSearchParams();
+  params.set('since', weekAgo.toISOString());
+  params.set('until', now.toISOString());
+  if (projectId) params.set('project_id', projectId);
+  params.set('limit', '200');
+
+  const allItems: TodoistCompletedItem[] = [];
+  let cursor: string | null = null;
+
+  for (;;) {
+    if (cursor) params.set('cursor', cursor);
+    const data = await apiRequest<TodoistCompletedResponse>(
+      `/tasks/completed/by_completion_date?${params.toString()}`
+    );
+    allItems.push(...data.items);
+    cursor = data.next_cursor;
+    if (!cursor) break;
+  }
+
+  return allItems
+    .map((item) => ({
+      id: item.id,
+      title: item.content,
+      completedAt: new Date(item.completed_at),
+    }))
+    .sort((a, b) => b.completedAt.getTime() - a.completedAt.getTime());
 }
 
 export async function updateTaskDue(
