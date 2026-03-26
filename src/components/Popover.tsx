@@ -57,6 +57,9 @@ export default function Popover({ open, onClose, children, className = '', align
       if (ref.current && ref.current.contains(e.target as Node)) return;
       const parent = anchorRef.current?.parentElement;
       if (parent && parent.contains(e.target as Node)) return;
+      // Don't close if click is inside a child portal (e.g. DatePicker calendar)
+      const target = e.target as HTMLElement;
+      if (target.closest?.('[data-popover-child]')) return;
       onClose();
     }
     document.addEventListener('mousedown', handleClick);

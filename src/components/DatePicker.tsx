@@ -149,6 +149,7 @@ export default function DatePicker({ value, onChange, placeholder = 'Pick a date
       {open && createPortal(
         <div
           ref={calRef}
+          data-popover-child
           style={{ top: calPos.top, left: calPos.left, visibility: calReady ? 'visible' : 'hidden' }}
           className="fixed z-[60] bg-white border border-wall-border rounded-xl shadow-lg p-3 w-[300px]"
         >
