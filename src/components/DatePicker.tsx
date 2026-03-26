@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 interface DatePickerProps {
   value: string; // YYYY-MM-DD or ''
@@ -82,9 +83,52 @@ export default function DatePicker({ value, onChange, placeholder = 'Pick a date
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
 
+  const btnRef = useRef<HTMLButtonElement>(null);
+  const calRef = useRef<HTMLDivElement>(null);
+  const [calPos, setCalPos] = useState({ top: 0, left: 0 });
+  const [calReady, setCalReady] = useState(false);
+
+  const updateCalPos = useCallback(() => {
+    if (!btnRef.current || !calRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    const calRect = calRef.current.getBoundingClientRect();
+    let top = rect.bottom + 4;
+    let left = rect.left;
+    if (top + calRect.height > window.innerHeight - 8) {
+      top = Math.max(8, rect.top - calRect.height - 4);
+    }
+    if (left + calRect.width > window.innerWidth - 8) {
+      left = window.innerWidth - calRect.width - 8;
+    }
+    if (left < 8) left = 8;
+    setCalPos({ top, left });
+  }, []);
+
+  useEffect(() => {
+    if (!open) { setCalReady(false); return; }
+    const rafId = requestAnimationFrame(() => {
+      updateCalPos();
+      setCalReady(true);
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [open, updateCalPos, viewMonth, viewYear]);
+
+  // Close calendar on outside click
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      if (calRef.current?.contains(e.target as Node)) return;
+      if (btnRef.current?.contains(e.target as Node)) return;
+      setOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [open]);
+
   return (
-    <div className="relative">
+    <div>
       <button
+        ref={btnRef}
         type="button"
         onClick={() => {
           if (!open) {
@@ -102,40 +146,44 @@ export default function DatePicker({ value, onChange, placeholder = 'Pick a date
         {displayText}
       </button>
 
-      {open && (
-        <div className="absolute z-50 left-0 top-12 bg-white border border-wall-border rounded-xl shadow-lg p-5 w-[420px]">
+      {open && createPortal(
+        <div
+          ref={calRef}
+          style={{ top: calPos.top, left: calPos.left, visibility: calReady ? 'visible' : 'hidden' }}
+          className="fixed z-[60] bg-white border border-wall-border rounded-xl shadow-lg p-3 w-[300px]"
+        >
           {/* Month navigation */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             <button
               type="button"
               onClick={prevMonth}
-              className="min-h-[48px] min-w-[48px] flex items-center justify-center text-2xl text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-colors"
+              className="min-h-[32px] min-w-[32px] flex items-center justify-center text-xl text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-colors"
             >
               ‹
             </button>
-            <span className="text-lg font-semibold text-wall-text">
+            <span className="text-sm font-semibold text-wall-text">
               {formatMonthYear(viewYear, viewMonth)}
             </span>
             <button
               type="button"
               onClick={nextMonth}
-              className="min-h-[48px] min-w-[48px] flex items-center justify-center text-2xl text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-colors"
+              className="min-h-[32px] min-w-[32px] flex items-center justify-center text-xl text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-colors"
             >
               ›
             </button>
           </div>
 
           {/* Day-of-week headers */}
-          <div className="grid grid-cols-7 gap-1.5 mb-2">
+          <div className="grid grid-cols-7 gap-0.5 mb-1">
             {DAYS.map((d) => (
-              <div key={d} className="text-center text-sm font-semibold text-wall-muted py-1">
+              <div key={d} className="text-center text-xs font-semibold text-wall-muted py-0.5">
                 {d}
               </div>
             ))}
           </div>
 
           {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-1.5">
+          <div className="grid grid-cols-7 gap-0.5">
             {cells.map((day, i) => {
               if (day === null) {
                 return <div key={`e${i}`} />;
@@ -148,7 +196,7 @@ export default function DatePicker({ value, onChange, placeholder = 'Pick a date
                   key={day}
                   type="button"
                   onClick={() => selectDay(day)}
-                  className={`min-h-[48px] rounded-lg text-base font-medium transition-colors ${
+                  className={`min-h-[32px] rounded-lg text-sm font-medium transition-colors ${
                     isSelected
                       ? 'bg-wall-today text-white'
                       : isToday
@@ -163,23 +211,24 @@ export default function DatePicker({ value, onChange, placeholder = 'Pick a date
           </div>
 
           {/* Footer */}
-          <div className="flex justify-between mt-4 pt-3 border-t border-wall-border">
+          <div className="flex justify-between mt-2 pt-2 border-t border-wall-border">
             <button
               type="button"
               onClick={handleClear}
-              className="min-h-[44px] px-5 text-base text-wall-muted hover:text-wall-overdue transition-colors"
+              className="min-h-[32px] px-3 text-sm text-wall-muted hover:text-wall-overdue transition-colors"
             >
               Clear
             </button>
             <button
               type="button"
               onClick={handleToday}
-              className="min-h-[44px] px-5 text-base font-medium text-wall-today hover:text-wall-today/70 transition-colors"
+              className="min-h-[32px] px-3 text-sm font-medium text-wall-today hover:text-wall-today/70 transition-colors"
             >
               Today
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

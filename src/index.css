@@ -52,37 +52,6 @@ html, body, #root {
   animation: none;
 }
 
-@keyframes stare {
-  0%, 90%, 100% { transform: scale(1); }
-  95% { transform: scale(1.05); }
-}
-
-/* Task card slide-in entrance */
-@keyframes slide-in {
-  from {
-    transform: translateY(8px);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Count badge pop */
-@keyframes pop-in {
-  0% { transform: scale(0.6); opacity: 0; }
-  70% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Count badge heartbeat (overdue) */
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  14% { transform: scale(1.2); }
-  28% { transform: scale(1); }
-  42% { transform: scale(1.1); }
-  70% { transform: scale(1); }
-}
-
 /* Section icon gentle float */
 @keyframes float {
   0%, 100% { transform: translateY(0); }

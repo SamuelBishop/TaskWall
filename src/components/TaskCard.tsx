@@ -107,7 +107,7 @@ export default function TaskCard({
               {task.assigneeName ? getFirstName(task.assigneeName) : '—'}
             </button>
 
-            <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} className="right-0 top-11 py-2 min-w-[200px]">
+            <Popover open={assigneeOpen} onClose={() => setAssigneeOpen(false)} align="right" className="right-0 top-11 py-2 min-w-[200px]">
               <button
                 onClick={() => { onReassign(task.id, null); setAssigneeOpen(false); }}
                 className={`w-full text-left px-5 py-3.5 text-base hover:bg-wall-surface transition-colors ${
@@ -162,7 +162,7 @@ export default function TaskCard({
             {formatDate(task.due)}
           </button>
 
-          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-5 w-[400px]">
+          <Popover open={dateOpen} onClose={() => setDateOpen(false)} className="left-0 top-10 p-4 w-[340px]">
             <div className="space-y-4">
               <label className="block text-sm text-wall-muted font-medium">Due date</label>
               <DatePicker
