@@ -160,6 +160,121 @@ sudo reboot
 
 The Pi should now boot straight into the desktop, rotate to landscape, and launch TaskWall in fullscreen kiosk mode.
 
+### 7. Display brightness & sleep control
+
+The display automatically dims when idle during the day and turns off at night, waking on touch. This uses `swayidle` (which integrates with the Wayland compositor) and cron for scheduling. The backlight is at `/sys/class/backlight/11-0045/`.
+
+#### Install swayidle
+
+```bash
+sudo apt install -y swayidle
+```
+
+#### Set timezone
+
+```bash
+sudo timedatectl set-timezone America/Denver
+```
+
+This handles MDT ↔ MST transitions automatically.
+
+#### Allow passwordless backlight control
+
+```bash
+sudo tee /etc/sudoers.d/backlight << 'EOF'
+taskwall ALL=(ALL) NOPASSWD: /usr/bin/tee /sys/class/backlight/11-0045/bl_power, /usr/bin/tee /sys/class/backlight/11-0045/brightness
+EOF
+```
+
+#### Add user to input group
+
+```bash
+sudo usermod -aG input taskwall
+```
+
+#### Create scripts
+
+**Daytime dimmer** — dims to brightness 2 after 60 seconds idle, restores to 31 on touch. Runs at boot via autostart.
+
+```bash
+sudo tee /usr/local/bin/taskwall-display-dim << 'SCRIPT'
+#!/bin/bash
+BL="/sys/class/backlight/11-0045/brightness"
+export WAYLAND_DISPLAY=wayland-0
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+swayidle -w \
+    timeout 60 "echo 2 | sudo tee $BL > /dev/null" \
+    resume     "echo 31 | sudo tee $BL > /dev/null"
+SCRIPT
+sudo chmod +x /usr/local/bin/taskwall-display-dim
+```
+
+**Night sleep** — kills the daytime dimmer, then turns the backlight off after 15 seconds idle. Touch wakes the screen at brightness 8 for 15 seconds before turning off again. Started by cron at 9 PM.
+
+```bash
+sudo tee /usr/local/bin/taskwall-display-sleep << 'SCRIPT'
+#!/bin/bash
+BL_POWER="/sys/class/backlight/11-0045/bl_power"
+BL_BRIGHT="/sys/class/backlight/11-0045/brightness"
+export WAYLAND_DISPLAY=wayland-0
+export XDG_RUNTIME_DIR=/run/user/$(id -u)
+pkill -f taskwall-display-dim || true
+swayidle -w \
+    timeout 15 "echo 1 | sudo tee $BL_POWER > /dev/null" \
+    resume     "echo 0 | sudo tee $BL_POWER > /dev/null; echo 8 | sudo tee $BL_BRIGHT > /dev/null"
+SCRIPT
+sudo chmod +x /usr/local/bin/taskwall-display-sleep
+```
+
+**Wake** — kills night mode, restores full brightness, and restarts the daytime dimmer. Started by cron at 6 AM.
+
+```bash
+sudo tee /usr/local/bin/taskwall-display-wake << 'SCRIPT'
+#!/bin/bash
+pkill -f swayidle || true
+pkill -f taskwall-display-sleep || true
+sleep 1
+echo 0 | sudo tee /sys/class/backlight/11-0045/bl_power > /dev/null
+echo 31 | sudo tee /sys/class/backlight/11-0045/brightness > /dev/null
+nohup /usr/local/bin/taskwall-display-dim > /dev/null 2>&1 &
+SCRIPT
+sudo chmod +x /usr/local/bin/taskwall-display-wake
+```
+
+#### Autostart the daytime dimmer
+
+```bash
+cat > ~/.config/autostart/taskwall-dim.desktop << 'EOF'
+[Desktop Entry]
+Type=Application
+Name=TaskWall Dim
+Exec=/usr/local/bin/taskwall-display-dim
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+EOF
+```
+
+#### Schedule night mode via cron
+
+```bash
+crontab -e
+```
+
+Add:
+
+```
+0 21 * * * /usr/local/bin/taskwall-display-sleep &
+0  6 * * * /usr/local/bin/taskwall-display-wake
+```
+
+#### Behavior summary
+
+| Time | Idle behavior | On touch |
+|---|---|---|
+| **6 AM – 9 PM** | Dims to brightness 2 after 60s | Restores to full brightness (31) |
+| **9 PM – 6 AM** | Backlight off after 15s | Wakes at brightness 8 for 15s |
+
 ## Project Structure
 
 ```
