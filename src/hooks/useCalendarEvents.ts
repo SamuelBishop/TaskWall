@@ -28,9 +28,9 @@ export function useCalendarEvents(
 
   const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
 
-  const loadEvents = useCallback(async () => {
+  const loadEvents = useCallback(async (showLoading = true) => {
     if (!configured) return;
-    setLoading(true);
+    if (showLoading) setLoading(true);
     try {
       const data = await fetchAllEvents(rangeStart, rangeEnd);
       setEvents(data);
@@ -43,13 +43,15 @@ export function useCalendarEvents(
     }
   }, [configured, rangeStart.getTime(), rangeEnd.getTime()]);
 
+  // Fetch silently on range change (no "Syncing..." flash)
   useEffect(() => {
-    loadEvents();
+    loadEvents(false);
   }, [loadEvents]);
 
+  // Polling shows the loading indicator
   useEffect(() => {
     if (!configured) return;
-    intervalRef.current = setInterval(loadEvents, POLL_INTERVAL);
+    intervalRef.current = setInterval(() => loadEvents(true), POLL_INTERVAL);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -62,6 +64,6 @@ export function useCalendarEvents(
     configured,
     calendars,
     lastUpdated,
-    refresh: loadEvents,
+    refresh: () => loadEvents(true),
   };
 }

@@ -57,3 +57,13 @@ html, body, #root {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-2px); }
 }
+
+/* Calendar view crossfade */
+@keyframes view-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.calendar-view-enter {
+  animation: view-fade-in 0.2s ease-out both;
+}

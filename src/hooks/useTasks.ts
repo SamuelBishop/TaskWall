@@ -44,8 +44,8 @@ export function useTasks(): UseTasksResult {
 
   const configured = isConfigured();
 
-  const loadTasks = useCallback(async () => {
-    setLoading(true);
+  const loadTasks = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     setError(null);
     try {
       const collabs = await fetchCollaborators();
@@ -68,8 +68,8 @@ export function useTasks(): UseTasksResult {
 
   useEffect(() => {
     if (!configured) return;
-    loadTasks();
-    intervalRef.current = setInterval(loadTasks, REFRESH_INTERVAL);
+    loadTasks(true); // Show loading on initial load
+    intervalRef.current = setInterval(() => loadTasks(false), REFRESH_INTERVAL); // Silent polling
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };

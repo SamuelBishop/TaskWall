@@ -123,66 +123,68 @@ export default function TaskWallApp({ onNavigateHome }: TaskWallAppProps) {
         />
       )}
 
-      {page === 'main' ? (
-        <main className="flex-1 grid grid-cols-2 gap-6 px-8 py-5 min-h-0 overflow-hidden">
-          <TaskSection
-            title="Today"
-            tasks={filterTasks(tasks?.today ?? [])}
-            variant="today"
-            icon="📋"
-            emptyMessage="No tasks for today"
-            collaborators={collaborators}
-            onReassign={reassign}
-            onUpdateDue={changeDue}
-            onDelete={removeTask}
-            onComplete={completeTask}
-          />
-          <TaskSection
-            title="Upcoming (7 Days)"
-            tasks={filterTasks(tasks?.upcoming ?? [])}
-            variant="upcoming"
-            icon="📅"
-            emptyMessage="Nothing upcoming"
-            collaborators={collaborators}
-            onReassign={reassign}
-            onUpdateDue={changeDue}
-            onDelete={removeTask}
-            onComplete={completeTask}
-          />
-        </main>
-      ) : page === 'overdue' ? (
-        <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
-          <TaskSection
-            title="Overdue"
-            tasks={filterTasks(tasks?.overdue ?? [])}
-            variant="overdue"
-            icon="🔴"
-            emptyMessage="All caught up!"
-            collaborators={collaborators}
-            onReassign={reassign}
-            onUpdateDue={changeDue}
-            onDelete={removeTask}
-            onComplete={completeTask}
-          />
-        </main>
-      ) : page === 'completed' ? (
-        <CompletedSection completedTasks={completedTasks} />
-      ) : (
-        <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
-          <TaskSection
-            title="Future"
-            tasks={filterTasks(tasks?.future ?? [])}
-            variant="future"
-            icon="🔮"
-            emptyMessage="Nothing planned"
-            collaborators={collaborators}
-            onReassign={reassign}
-            onUpdateDue={changeDue}
-            onDelete={removeTask}
-            onComplete={completeTask}
-          />
-        </main>
-      )}
+      <div key={page} className="flex-1 flex flex-col min-h-0 overflow-hidden calendar-view-enter">
+        {page === 'main' ? (
+          <main className="flex-1 grid grid-cols-2 gap-6 px-8 py-5 min-h-0 overflow-hidden">
+            <TaskSection
+              title="Today"
+              tasks={filterTasks(tasks?.today ?? [])}
+              variant="today"
+              icon="📋"
+              emptyMessage="No tasks for today"
+              collaborators={collaborators}
+              onReassign={reassign}
+              onUpdateDue={changeDue}
+              onDelete={removeTask}
+              onComplete={completeTask}
+            />
+            <TaskSection
+              title="Upcoming (7 Days)"
+              tasks={filterTasks(tasks?.upcoming ?? [])}
+              variant="upcoming"
+              icon="📅"
+              emptyMessage="Nothing upcoming"
+              collaborators={collaborators}
+              onReassign={reassign}
+              onUpdateDue={changeDue}
+              onDelete={removeTask}
+              onComplete={completeTask}
+            />
+          </main>
+        ) : page === 'overdue' ? (
+          <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
+            <TaskSection
+              title="Overdue"
+              tasks={filterTasks(tasks?.overdue ?? [])}
+              variant="overdue"
+              icon="🔴"
+              emptyMessage="All caught up!"
+              collaborators={collaborators}
+              onReassign={reassign}
+              onUpdateDue={changeDue}
+              onDelete={removeTask}
+              onComplete={completeTask}
+            />
+          </main>
+        ) : page === 'completed' ? (
+          <CompletedSection completedTasks={completedTasks} />
+        ) : (
+          <main className="flex-1 flex flex-col px-8 py-5 min-h-0 overflow-hidden">
+            <TaskSection
+              title="Future"
+              tasks={filterTasks(tasks?.future ?? [])}
+              variant="future"
+              icon="🔮"
+              emptyMessage="Nothing planned"
+              collaborators={collaborators}
+              onReassign={reassign}
+              onUpdateDue={changeDue}
+              onDelete={removeTask}
+              onComplete={completeTask}
+            />
+          </main>
+        )}
+      </div>
     </>
   );
 }

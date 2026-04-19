@@ -187,15 +187,17 @@ export default function CalendarApp({ onNavigateHome }: CalendarAppProps) {
         </div>
       )}
 
-      {view === 'day' && (
-        <CalendarDayView date={focusDate} events={events} allEvents={events} />
-      )}
-      {view === 'week' && (
-        <CalendarWeekView weekStart={startOfWeek(focusDate)} events={events} />
-      )}
-      {view === 'month' && (
-        <CalendarMonthView date={focusDate} events={events} />
-      )}
+      <div key={`${view}-${focusDate.getTime()}`} className="flex-1 flex flex-col min-h-0 overflow-hidden calendar-view-enter">
+        {view === 'day' && (
+          <CalendarDayView date={focusDate} events={events} allEvents={events} />
+        )}
+        {view === 'week' && (
+          <CalendarWeekView weekStart={startOfWeek(focusDate)} events={events} />
+        )}
+        {view === 'month' && (
+          <CalendarMonthView date={focusDate} events={events} />
+        )}
+      </div>
     </>
   );
 }
@@ -245,14 +247,14 @@ function Header({
 
       {/* Center: navigation + date */}
       <div className="flex items-center gap-3">
-        {!isToday && (
-          <button
-            onClick={onToday}
-            className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-base font-semibold text-wall-text hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
-          >
-            Today
-          </button>
-        )}
+        <button
+          onClick={onToday}
+          className={`min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-base font-semibold text-wall-text hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all ${
+            isToday ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          }`}
+        >
+          Today
+        </button>
         <button
           onClick={onPrev}
           className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-wall-border bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50 active:scale-95 transition-all text-xl"
