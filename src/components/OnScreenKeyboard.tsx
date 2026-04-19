@@ -45,8 +45,12 @@ export default function OnScreenKeyboard({ value, onChange, onClose }: OnScreenK
   const portalTarget = document.getElementById('taskwall-root');
 
   const keyboard = (
-    <div className="absolute inset-0 z-[100] bg-wall-bg flex flex-col">
-      {/* Input + Ok button */}
+    <div
+      className="absolute inset-0 z-[100] bg-wall-bg flex flex-col"
+      onPointerDown={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+    >
+      {/* Input + Back button */}
       <div className="flex gap-3 px-6 pt-5 pb-3">
         <input
           type="text"
@@ -59,9 +63,9 @@ export default function OnScreenKeyboard({ value, onChange, onClose }: OnScreenK
         <button
           type="button"
           onPointerDown={(e) => { e.preventDefault(); onClose(); }}
-          className="h-[64px] px-6 rounded-lg bg-white border-2 border-emerald-400 text-emerald-500 text-sm font-semibold hover:bg-emerald-50 active:bg-emerald-100 transition-colors"
+          className="h-[64px] px-5 rounded-lg bg-gray-100 border border-gray-300 text-wall-text text-sm font-semibold hover:bg-gray-200 active:bg-gray-300 transition-colors flex items-center gap-1.5"
         >
-          Confirm
+          ← Back
         </button>
       </div>
 
