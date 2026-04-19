@@ -61,3 +61,25 @@ export interface TaskGroup {
 
 export type ActiveApp = 'home' | 'taskwall' | 'calendar';
 export type LaunchableApp = Exclude<ActiveApp, 'home'>;
+
+// Calendar types
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  allDay: boolean;
+  calendarId: string;
+  calendarName: string;
+  color: string;
+  location?: string;
+}
+
+export interface CalendarConfig {
+  id: string;
+  name: string;
+  color: string;
+  tokenKey: 'primary' | 'secondary';
+}
+
+export type CalendarView = 'day' | 'week' | 'month';

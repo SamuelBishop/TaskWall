@@ -58,6 +58,16 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/todoist/, '/api/v1'),
       },
+      '/api/gcal': {
+        target: 'https://www.googleapis.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/gcal/, '/calendar/v3'),
+      },
+      '/api/google-token': {
+        target: 'https://oauth2.googleapis.com',
+        changeOrigin: true,
+        rewrite: () => '/token',
+      },
     },
   },
 });
