@@ -58,11 +58,11 @@ export default function CalendarMonthView({ date, events }: MonthViewProps) {
   const weeks = getCalendarGrid(date);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-4 py-3">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden px-6 py-3">
       {/* Day-of-week headers */}
       <div className="flex-shrink-0 grid grid-cols-7 mb-1">
         {DAY_NAMES.map((name) => (
-          <div key={name} className="text-center text-[11px] font-semibold uppercase tracking-wider text-wall-muted py-1">
+          <div key={name} className="text-center text-xs font-semibold uppercase tracking-wider text-wall-muted py-1.5">
             {name}
           </div>
         ))}
@@ -80,14 +80,14 @@ export default function CalendarMonthView({ date, events }: MonthViewProps) {
               return (
                 <div
                   key={day.toISOString()}
-                  className={`flex flex-col border-r border-wall-border last:border-r-0 px-1 py-0.5 min-h-0 overflow-hidden ${
+                  className={`flex flex-col border-r border-wall-border last:border-r-0 px-1.5 py-1 min-h-0 overflow-hidden ${
                     isToday ? 'bg-wall-today/[0.06]' : ''
                   } ${!isCurrentMonth ? 'opacity-40' : ''}`}
                 >
                   {/* Day number */}
                   <div className="flex-shrink-0 flex items-center justify-end">
                     <span
-                      className={`text-[12px] font-semibold leading-none px-1.5 py-0.5 rounded-full ${
+                      className={`text-sm font-semibold leading-none px-2 py-1 rounded-full ${
                         isToday ? 'bg-wall-today text-white' : 'text-wall-text'
                       }`}
                     >
@@ -100,18 +100,18 @@ export default function CalendarMonthView({ date, events }: MonthViewProps) {
                     {dayEvents.slice(0, MAX_VISIBLE).map((e) => (
                       <div
                         key={e.id}
-                        className="flex items-center gap-1 px-1 py-[1px] rounded truncate mb-[1px]"
+                        className="flex items-center gap-1 px-1 py-[2px] rounded truncate mb-[2px]"
                         title={`${e.title}${e.allDay ? '' : ` · ${formatTime12Short(e.start)}`} · ${e.calendarName}`}
                       >
-                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: e.color }} />
-                        <span className="text-[10px] text-wall-text truncate leading-tight font-medium">
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: e.color }} />
+                        <span className="text-[11px] text-wall-text truncate leading-tight font-medium">
                           {!e.allDay && <span className="text-wall-muted mr-0.5">{formatTime12Short(e.start)}</span>}
                           {e.title}
                         </span>
                       </div>
                     ))}
                     {dayEvents.length > MAX_VISIBLE && (
-                      <p className="text-[10px] text-wall-muted px-1 font-medium">
+                      <p className="text-[11px] text-wall-muted px-1 font-medium">
                         +{dayEvents.length - MAX_VISIBLE} more
                       </p>
                     )}

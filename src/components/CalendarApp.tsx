@@ -230,17 +230,17 @@ function Header({
   calendars,
 }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-6 py-3.5 border-b border-wall-border flex-shrink-0">
+    <header className="flex items-center justify-between px-8 py-5 border-b border-wall-border flex-shrink-0">
       {/* Left: home + title */}
-      <div className="flex items-center gap-3 min-w-[180px]">
+      <div className="flex items-center gap-4">
         <button
           onClick={onNavigateHome}
-          className="min-h-[40px] min-w-[40px] flex items-center justify-center text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-all"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-all"
           title="Home"
         >
           <GridIcon />
         </button>
-        <h1 className="text-2xl font-bold text-wall-text tracking-tight">Calendar</h1>
+        <h1 className="text-3xl font-bold text-wall-text tracking-tight">Calendar</h1>
       </div>
 
       {/* Center: navigation + date */}
@@ -248,35 +248,35 @@ function Header({
         {!isToday && (
           <button
             onClick={onToday}
-            className="min-h-[36px] px-3 rounded-lg border border-wall-border bg-wall-surface text-sm font-semibold text-wall-text hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
+            className="min-h-[44px] px-4 rounded-lg border border-wall-border bg-wall-surface text-base font-semibold text-wall-text hover:bg-wall-border/50 hover:scale-105 active:scale-95 transition-all"
           >
             Today
           </button>
         )}
         <button
           onClick={onPrev}
-          className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg border border-wall-border bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50 active:scale-95 transition-all text-lg"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-wall-border bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50 active:scale-95 transition-all text-xl"
         >
           ‹
         </button>
-        <p className="text-lg font-medium text-wall-text min-w-[240px] text-center">{dateLabel}</p>
+        <p className="text-xl font-medium text-wall-text min-w-[260px] text-center">{dateLabel}</p>
         <button
           onClick={onNext}
-          className="min-h-[36px] min-w-[36px] flex items-center justify-center rounded-lg border border-wall-border bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50 active:scale-95 transition-all text-lg"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border border-wall-border bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50 active:scale-95 transition-all text-xl"
         >
           ›
         </button>
       </div>
 
-      {/* Right: view toggle + filter + refresh */}
-      <div className="flex items-center gap-2.5 min-w-[180px] justify-end">
+      {/* Right: view toggle + legend + refresh */}
+      <div className="flex items-center gap-3 justify-end">
         {/* View toggle */}
         <div className="flex rounded-lg border border-wall-border overflow-hidden">
           {VIEW_LABELS.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => onViewChange(key)}
-              className={`px-3 py-1.5 text-sm font-semibold transition-colors ${
+              className={`px-4 py-2 text-base font-semibold transition-colors ${
                 view === key
                   ? 'bg-wall-today text-white'
                   : 'bg-wall-surface text-wall-muted hover:text-wall-text hover:bg-wall-border/50'
@@ -289,27 +289,27 @@ function Header({
 
         {/* Calendar color legend */}
         {calendars.length > 0 && (
-          <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg border border-wall-border bg-wall-surface">
+          <div className="flex items-center gap-3 px-3 py-2 rounded-lg border border-wall-border bg-wall-surface">
             {calendars.map((c) => (
               <div key={c.id} className="flex items-center gap-1.5">
-                <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ backgroundColor: c.color }} />
-                <span className="text-sm font-medium text-wall-text">{c.name}</span>
+                <span className="w-3.5 h-3.5 rounded-sm flex-shrink-0" style={{ backgroundColor: c.color }} />
+                <span className="text-base font-medium text-wall-text">{c.name}</span>
               </div>
             ))}
           </div>
         )}
 
         {lastUpdated && (
-          <span className="text-xs text-wall-muted hidden xl:inline">
+          <span className="text-sm text-wall-muted">
             {formatTime(lastUpdated)}
           </span>
         )}
         {loading && (
-          <span className="text-xs text-wall-today animate-pulse">Syncing…</span>
+          <span className="text-sm text-wall-today animate-pulse">Syncing…</span>
         )}
         <button
           onClick={onRefresh}
-          className="min-h-[36px] min-w-[36px] flex items-center justify-center text-wall-muted hover:text-wall-text text-lg hover:rotate-180 transition-all duration-500 rounded-lg hover:bg-wall-surface"
+          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text text-xl hover:rotate-180 transition-all duration-500 rounded-lg hover:bg-wall-surface"
           title="Refresh"
         >
           ↻

@@ -66,28 +66,28 @@ function DayColumn({ day, isToday, events }: { day: Date; isToday: boolean; even
   return (
     <div className={`flex-1 flex flex-col min-h-0 border-r border-wall-border last:border-r-0 ${isToday ? 'bg-wall-today/[0.03]' : ''}`}>
       {/* Day header */}
-      <div className={`flex-shrink-0 text-center py-2.5 border-b border-wall-border ${isToday ? 'bg-wall-today/10' : ''}`}>
-        <p className={`text-xs font-semibold uppercase tracking-wider ${isToday ? 'text-wall-today' : 'text-wall-muted'}`}>
+      <div className={`flex-shrink-0 text-center py-3 border-b border-wall-border ${isToday ? 'bg-wall-today/10' : ''}`}>
+        <p className={`text-sm font-semibold uppercase tracking-wider ${isToday ? 'text-wall-today' : 'text-wall-muted'}`}>
           {getDayName(day)}
         </p>
-        <p className={`text-lg font-bold leading-tight ${isToday ? 'text-wall-today' : 'text-wall-text'}`}>
+        <p className={`text-xl font-bold leading-tight ${isToday ? 'text-wall-today' : 'text-wall-text'}`}>
           {getDayNumber(day)}
         </p>
       </div>
 
       {/* Events */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-1.5 py-2 select-none touch-pan-y cursor-grab active:cursor-grabbing">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-2 py-2.5 select-none touch-pan-y cursor-grab active:cursor-grabbing">
         {events.length === 0 ? (
-          <p className="text-[11px] text-wall-muted text-center mt-4 italic">No events</p>
+          <p className="text-sm text-wall-muted text-center mt-6 italic">No events</p>
         ) : (
           events.map((e) => (
             <div
               key={e.id}
-              className="border-l-[3px] bg-wall-surface rounded-r-lg px-2 py-1.5 mb-1.5 transition-all hover:shadow-md animate-slide-in"
+              className="border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2.5 mb-2 transition-all hover:shadow-md animate-slide-in"
               style={{ borderLeftColor: e.color }}
             >
-              <p className="text-[13px] font-semibold text-wall-text truncate leading-tight">{e.title}</p>
-              <p className="text-[11px] text-wall-muted truncate">
+              <p className="text-base font-semibold text-wall-text truncate leading-tight">{e.title}</p>
+              <p className="text-xs text-wall-muted truncate">
                 {e.allDay ? 'All day' : formatTime12(e.start)}
               </p>
             </div>

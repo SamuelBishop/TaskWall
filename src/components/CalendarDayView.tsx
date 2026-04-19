@@ -8,7 +8,7 @@ interface DayViewProps {
   allEvents: CalendarEvent[];
 }
 
-const HOUR_HEIGHT = 52;
+const HOUR_HEIGHT = 56;
 const START_HOUR = 7;
 const END_HOUR = 22;
 const TOTAL_HOURS = END_HOUR - START_HOUR;
@@ -73,7 +73,7 @@ function eventTop(event: CalendarEvent): number {
 function eventHeight(event: CalendarEvent): number {
   const startH = Math.max(event.start.getHours() + event.start.getMinutes() / 60, START_HOUR);
   const endH = Math.min(event.end.getHours() + event.end.getMinutes() / 60, END_HOUR);
-  return Math.max((endH - startH) * HOUR_HEIGHT, 22);
+  return Math.max((endH - startH) * HOUR_HEIGHT, 26);
 }
 
 export default function CalendarDayView({ date, events, allEvents }: DayViewProps) {
@@ -123,13 +123,13 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
       <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* All-day events */}
         {allDayEvents.length > 0 && (
-          <div className="flex-shrink-0 px-6 pt-3 pb-1">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-wall-muted mb-1.5 ml-14">All Day</p>
-            <div className="flex gap-2 ml-14">
+          <div className="flex-shrink-0 px-8 pt-4 pb-1">
+            <p className="text-xs font-semibold uppercase tracking-wider text-wall-muted mb-2 ml-16">All Day</p>
+            <div className="flex gap-2 ml-16">
               {allDayEvents.map((e) => (
                 <div
                   key={e.id}
-                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-1.5 text-sm font-medium text-wall-text truncate max-w-[260px]"
+                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-4 py-2 text-base font-medium text-wall-text truncate max-w-[280px]"
                   style={{ borderLeftColor: e.color }}
                 >
                   {e.title}
@@ -140,12 +140,12 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
         )}
 
         {/* Scrollable time grid */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-6 pb-4 select-none touch-pan-y cursor-grab active:cursor-grabbing">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto min-h-0 px-8 pb-5 select-none touch-pan-y cursor-grab active:cursor-grabbing">
           <div className="relative" style={{ height: TOTAL_HOURS * HOUR_HEIGHT }}>
             {/* Hour lines */}
             {Array.from({ length: TOTAL_HOURS + 1 }, (_, i) => (
               <div key={i} className="absolute left-0 right-0 flex items-start" style={{ top: i * HOUR_HEIGHT }}>
-                <span className="text-[11px] text-wall-muted w-12 text-right pr-3 -mt-[7px] flex-shrink-0 tabular-nums">
+                <span className="text-xs text-wall-muted w-14 text-right pr-3 -mt-[8px] flex-shrink-0 tabular-nums">
                   {formatHourLabel(START_HOUR + i)}
                 </span>
                 <div className="flex-1 border-t border-wall-border" />
@@ -153,11 +153,11 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
             ))}
 
             {/* Events */}
-            <div className="absolute left-14 right-0 top-0 bottom-0">
+            <div className="absolute left-16 right-0 top-0 bottom-0">
               {laid.map(({ event, left, width }) => (
                 <div
                   key={event.id}
-                  className="absolute border-l-[3px] bg-wall-surface rounded-r-lg px-2.5 py-1.5 overflow-hidden hover:shadow-md transition-shadow cursor-default"
+                  className="absolute border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2 overflow-hidden hover:shadow-md transition-shadow cursor-default"
                   style={{
                     borderLeftColor: event.color,
                     top: eventTop(event),
@@ -166,13 +166,13 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
                     width: `calc(${width * 100}% - 4px)`,
                   }}
                 >
-                  <p className="text-sm font-semibold text-wall-text truncate leading-tight">{event.title}</p>
-                  <p className="text-[11px] text-wall-muted truncate">
+                  <p className="text-base font-semibold text-wall-text truncate leading-tight">{event.title}</p>
+                  <p className="text-xs text-wall-muted truncate">
                     {formatTime12(event.start)} – {formatTime12(event.end)}
                     {event.calendarName && <span className="ml-1.5 opacity-70">· {event.calendarName}</span>}
                   </p>
-                  {event.location && eventHeight(event) > 50 && (
-                    <p className="text-[11px] text-wall-muted truncate mt-0.5">{event.location}</p>
+                  {event.location && eventHeight(event) > 56 && (
+                    <p className="text-xs text-wall-muted truncate mt-0.5">{event.location}</p>
                   )}
                 </div>
               ))}
@@ -180,7 +180,7 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
               {/* Now indicator */}
               {showNowLine && (
                 <div ref={nowLineRef} className="absolute left-0 right-0 z-10 flex items-center pointer-events-none" style={{ top: nowTop }}>
-                  <div className="w-2.5 h-2.5 rounded-full bg-wall-overdue -ml-[5px] flex-shrink-0" />
+                  <div className="w-3 h-3 rounded-full bg-wall-overdue -ml-[6px] flex-shrink-0" />
                   <div className="flex-1 h-[2px] bg-wall-overdue" />
                 </div>
               )}
@@ -190,24 +190,24 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
       </div>
 
       {/* Sidebar: upcoming days */}
-      <div className="w-[280px] flex-shrink-0 border-l border-wall-border overflow-y-auto px-5 py-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-wall-muted mb-4">Upcoming</p>
+      <div className="w-[300px] flex-shrink-0 border-l border-wall-border overflow-y-auto px-6 py-5">
+        <p className="text-sm font-semibold uppercase tracking-wider text-wall-muted mb-4">Upcoming</p>
         {upcomingDays.map(({ date: d, events: evts }) => (
           <div key={d.toISOString()} className="mb-5">
-            <p className={`text-sm font-semibold mb-2 ${isSameDay(d, new Date(new Date().setDate(new Date().getDate() + 1))) ? 'text-wall-today' : 'text-wall-text'}`}>
+            <p className={`text-base font-semibold mb-2 ${isSameDay(d, new Date(new Date().setDate(new Date().getDate() + 1))) ? 'text-wall-today' : 'text-wall-text'}`}>
               {formatShortDate(d)}
             </p>
             {evts.length === 0 ? (
-              <p className="text-xs text-wall-muted italic">No events</p>
+              <p className="text-sm text-wall-muted italic">No events</p>
             ) : (
               evts.slice(0, 5).map((e) => (
                 <div
                   key={e.id}
-                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-2.5 py-1.5 mb-1.5 transition-all hover:shadow-sm"
+                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2.5 mb-2 transition-all hover:shadow-sm"
                   style={{ borderLeftColor: e.color }}
                 >
-                  <p className="text-sm font-medium text-wall-text truncate">{e.title}</p>
-                  <p className="text-[11px] text-wall-muted">
+                  <p className="text-base font-medium text-wall-text truncate">{e.title}</p>
+                  <p className="text-xs text-wall-muted">
                     {e.allDay ? 'All day' : formatTime12(e.start)}
                     {e.calendarName && <span className="ml-1 opacity-70">· {e.calendarName}</span>}
                   </p>
@@ -215,7 +215,7 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
               ))
             )}
             {evts.length > 5 && (
-              <p className="text-[11px] text-wall-muted mt-1">+{evts.length - 5} more</p>
+              <p className="text-xs text-wall-muted mt-1">+{evts.length - 5} more</p>
             )}
           </div>
         ))}

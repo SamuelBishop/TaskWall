@@ -1,56 +1,129 @@
 # TaskWall
 
-A minimalist, wall-mounted dashboard that displays your **Todoist** tasks in a clean, glanceable format. Designed for a Raspberry Pi with a 7-inch display (1280×720).
+A smart home tablet platform for **Raspberry Pi** with a 7-inch display (1280x720). Ships with two apps: **TaskWall** (Todoist task dashboard) and **Calendar** (Google Calendar integration with multi-user support).
 
-![Dark Mode Dashboard](https://img.shields.io/badge/display-1280×720-blue) ![React](https://img.shields.io/badge/react-19-blue) ![TypeScript](https://img.shields.io/badge/typescript-5.7-blue) ![Vite](https://img.shields.io/badge/vite-6-purple)
+![Display](https://img.shields.io/badge/display-1280×720-blue) ![React](https://img.shields.io/badge/react-19-blue) ![TypeScript](https://img.shields.io/badge/typescript-5.7-blue) ![Vite](https://img.shields.io/badge/vite-6-purple)
 
 ## Features
 
-- **3-column layout**: Overdue | Today | Upcoming
+### Home Screen
+- **App launcher** with clock and date display
+- **Configurable default app** — auto-launches on boot (TaskWall by default)
+- **Grid icon navigation** — tap to return home from any app
+
+### TaskWall (Todoist Dashboard)
+- **2-column layout**: Today | Upcoming (7 days)
+- **Additional views**: Overdue, Future, Completed (last 7 days)
 - **Todoist integration** via REST API v2
+- **Multi-user support** with assignee filtering
 - **Auto-refresh** every 5 minutes
-- **Dark mode** optimized for always-on displays
-- **High-contrast, large typography** readable from 3–6 feet
-- **1280×720 fixed container** for accurate Pi display simulation during development
-- **Physical-size preview** with calibration slider to simulate the actual 7″ screen
+- **Touch-optimized** — on-screen keyboard, drag-to-scroll, large tap targets
+
+### Calendar (Google Calendar)
+- **3 views**: Day, Week, Month — switchable from the header
+- **Multi-user calendars** — each person has their own Google account and refresh token
+- **Color-coded events** with a persistent legend in the header
+- **Day view**: Hourly timeline with event blocks, current time indicator, upcoming sidebar
+- **Week view**: 7-column layout with event card lists per day
+- **Month view**: Traditional grid with event snippets and color dots
+- **Auto-refresh** every 5 minutes
+- **OAuth2 authentication** — private calendars, no public sharing required
+
+### Display
+- **1280x720 fixed layout** optimized for Pi Display 2
+- **Physical-size preview** with calibration slider for development
+- **Kiosk mode** for fullscreen deployment
+- **High-contrast typography** readable from 3-6 feet
 
 ## Prerequisites
 
 - Node.js 18+ and npm
-- A Todoist account (free or Pro)
-- A Todoist API token
-
-## Todoist API Setup
-
-1. Open [Todoist](https://todoist.com) and log in
-2. Go to **Settings → Integrations → Developer**
-3. Copy your **API token**
-
-> Your API token gives full access to your Todoist account. Keep it secret.
+- A Todoist account with API token (for TaskWall)
+- A Google Cloud project with Calendar API enabled (for Calendar)
 
 ## Installation
 
 ```bash
-# Clone the repository
 git clone <your-repo-url>
 cd TaskWall
-
-# Install dependencies
 npm install
-
-# Create environment file
 cp .env.example .env
 ```
 
 ## Configuration
 
-Edit the `.env` file with your Todoist API token:
+Edit `.env` with your credentials:
+
+### TaskWall (Todoist)
 
 ```env
 VITE_TODOIST_API_TOKEN=your-todoist-api-token-here
 ```
 
-> **Security Note**: Never commit your `.env` file. It is already included in `.gitignore`.
+Get your token at: **Todoist → Settings → Integrations → Developer**
+
+Optional:
+```env
+VITE_TODOIST_PROJECT_ID=          # Filter to a specific project
+VITE_DISPLAY_NAMES=Name1:Display1,Name2:Display2  # Username mapping
+```
+
+### Calendar (Google Calendar)
+
+#### 1. Set up Google Cloud credentials
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com) → **APIs & Services**
+2. Enable the **Google Calendar API**
+3. Create an **OAuth 2.0 Client ID** (Web application type)
+4. Add `http://localhost:3001/callback` as an **Authorized Redirect URI**
+5. Add your Google accounts as **test users** (or publish the app to skip this)
+
+#### 2. Get refresh tokens
+
+Run the setup script for each user:
+
+```bash
+# Primary user (e.g. Sam)
+node scripts/google-auth.mjs YOUR_CLIENT_ID YOUR_CLIENT_SECRET
+
+# Secondary user (e.g. Shane) — sign in with their Google account
+node scripts/google-auth.mjs YOUR_CLIENT_ID YOUR_CLIENT_SECRET
+```
+
+Each run opens a browser for Google sign-in and prints a refresh token.
+
+#### 3. Add to `.env`
+
+```env
+VITE_GOOGLE_CLIENT_ID=your-client-id
+VITE_GOOGLE_CLIENT_SECRET=your-client-secret
+VITE_GOOGLE_REFRESH_TOKEN=primary-users-refresh-token
+VITE_GOOGLE_REFRESH_TOKEN_SECONDARY=secondary-users-refresh-token
+```
+
+#### 4. Configure calendars
+
+```env
+VITE_GOOGLE_CALENDARS="email1:Name1:#color1:primary,email2:Name2:#color2:secondary"
+```
+
+- **Calendar ID**: Usually the email address (find in Google Calendar → Settings → calendar)
+- **Name**: Display name shown in the legend
+- **Color**: Hex color for events (wrap the whole value in quotes since `#` is a comment character in `.env`)
+- **Token key**: `primary` or `secondary` — which refresh token to use
+
+Example:
+```env
+VITE_GOOGLE_CALENDARS="sam@gmail.com:Sam:#7ec8e3:primary,shane@gmail.com:Shane:#6b9e8a:secondary"
+```
+
+### Kiosk Mode
+
+```env
+VITE_KIOSK=true  # Hides dev controls, runs fullscreen
+```
+
+> **Security Note**: Never commit your `.env` file. It is already in `.gitignore`.
 
 ## Development
 
@@ -58,7 +131,7 @@ VITE_TODOIST_API_TOKEN=your-todoist-api-token-here
 npm run dev
 ```
 
-The app opens at `http://localhost:3000`. During development, the UI renders inside a fixed 1280×720 container centered on the page, simulating the Pi display.
+Opens at `http://localhost:3000`. The UI renders inside a 1280x720 container simulating the Pi display, with optional physical-size calibration.
 
 ## Build for Production
 
@@ -66,18 +139,17 @@ The app opens at `http://localhost:3000`. During development, the UI renders ins
 npm run build
 ```
 
-Output is in the `dist/` folder — a static site ready for deployment.
+Output is in `dist/` — a static site ready for deployment.
 
 ## Deploying to Raspberry Pi
 
-This guide is for a **Raspberry Pi 5** with the **Raspberry Pi Touch Display 2** (1280×720). The app is hosted on Vercel and loaded in Chromium kiosk mode — no local build or web server needed.
+This guide is for a **Raspberry Pi 5** with the **Raspberry Pi Touch Display 2** (1280x720). The app is hosted on Vercel and loaded in Chromium kiosk mode.
 
 ### 1. Flash the OS
 
-Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to flash **Raspberry Pi OS (64-bit)** (the Desktop variant) to your SD card or USB drive.
+Use [Raspberry Pi Imager](https://www.raspberrypi.com/software/) to flash **Raspberry Pi OS (64-bit)** (Desktop variant).
 
 In the Imager customisation screen, configure:
-
 - **Hostname**: `TaskWall`
 - **Enable SSH** (password authentication)
 - **Username / password**
@@ -89,7 +161,7 @@ In the Imager customisation screen, configure:
 ssh taskwall@TaskWall.local
 ```
 
-> **⚠️ Known issue (Raspberry Pi OS Trixie, Dec 2025 image):** Running `sudo apt full-upgrade` updates the kernel/compositor and breaks the Touch Display 2 touchscreen rotation mapping. To work around this, only upgrade Chromium — do **not** run `full-upgrade`.
+> **Known issue (Raspberry Pi OS Trixie, Dec 2025 image):** Running `sudo apt full-upgrade` updates the kernel/compositor and breaks Touch Display 2 touchscreen rotation mapping. Only upgrade Chromium — do **not** run `full-upgrade`.
 
 ```bash
 sudo apt update
@@ -99,14 +171,14 @@ sudo apt install -y fonts-noto-color-emoji kanshi wlr-randr
 
 ### 3. Rotate the display
 
-The Touch Display 2 defaults to portrait (720×1280). The display output is named `DSI-2` on the Pi 5. To verify:
+The Touch Display 2 defaults to portrait (720x1280). The output is `DSI-2` on the Pi 5.
 
 ```bash
 export WAYLAND_DISPLAY=wayland-0
 wlr-randr
 ```
 
-Make the rotation persistent with kanshi:
+Make persistent with kanshi:
 
 ```bash
 mkdir -p ~/.config/kanshi
@@ -117,7 +189,7 @@ profile {
 EOF
 ```
 
-> Use `transform 270` or `transform 90` depending on how the display is physically mounted. Test with `wlr-randr --output DSI-2 --transform 270` first to confirm the correct orientation.
+> Use `transform 270` or `transform 90` depending on mounting orientation.
 
 ### 4. Set up Chromium kiosk autostart
 
@@ -134,7 +206,7 @@ X-GNOME-Autostart-enabled=true
 EOF
 ```
 
-Disable the default keyring prompt (prevents a popup on boot):
+Disable the default keyring prompt:
 
 ```bash
 rm -rf ~/.local/share/keyrings/*
@@ -158,11 +230,9 @@ sudo raspi-config
 sudo reboot
 ```
 
-The Pi should now boot straight into the desktop, rotate to landscape, and launch TaskWall in fullscreen kiosk mode.
-
 ### 7. Display brightness & sleep control
 
-The display automatically dims when idle during the day and turns off at night, waking on touch. This uses `swayidle` (which integrates with the Wayland compositor) and cron for scheduling. The backlight is at `/sys/class/backlight/11-0045/`.
+The display dims when idle and turns off at night, waking on touch. Uses `swayidle` with cron scheduling. Backlight at `/sys/class/backlight/11-0045/`.
 
 #### Install swayidle
 
@@ -175,8 +245,6 @@ sudo apt install -y swayidle
 ```bash
 sudo timedatectl set-timezone America/Denver
 ```
-
-This handles MDT ↔ MST transitions automatically.
 
 #### Allow passwordless backlight control
 
@@ -194,7 +262,7 @@ sudo usermod -aG input taskwall
 
 #### Create scripts
 
-**Daytime dimmer** — dims to brightness 2 after 60 seconds idle, restores to 31 on touch. Runs at boot via autostart.
+**Daytime dimmer** — dims to brightness 2 after 60s idle, restores to 31 on touch:
 
 ```bash
 sudo tee /usr/local/bin/taskwall-display-dim << 'SCRIPT'
@@ -209,7 +277,7 @@ SCRIPT
 sudo chmod +x /usr/local/bin/taskwall-display-dim
 ```
 
-**Night sleep** — kills the daytime dimmer, then turns the backlight off after 15 seconds idle. Touch wakes the screen at brightness 8 for 15 seconds before turning off again. Started by cron at 9 PM.
+**Night sleep** — backlight off after 15s, wakes briefly at brightness 8 on touch:
 
 ```bash
 sudo tee /usr/local/bin/taskwall-display-sleep << 'SCRIPT'
@@ -226,7 +294,7 @@ SCRIPT
 sudo chmod +x /usr/local/bin/taskwall-display-sleep
 ```
 
-**Wake** — kills night mode, restores full brightness, and restarts the daytime dimmer. Started by cron at 6 AM.
+**Wake** — kills night mode, restores full brightness, restarts daytime dimmer:
 
 ```bash
 sudo tee /usr/local/bin/taskwall-display-wake << 'SCRIPT'
@@ -272,29 +340,45 @@ Add:
 
 | Time | Idle behavior | On touch |
 |---|---|---|
-| **6 AM – 9 PM** | Dims to brightness 2 after 60s | Restores to full brightness (31) |
-| **9 PM – 6 AM** | Backlight off after 15s | Wakes at brightness 8 for 15s |
+| **6 AM - 9 PM** | Dims to brightness 2 after 60s | Restores to full brightness (31) |
+| **9 PM - 6 AM** | Backlight off after 15s | Wakes at brightness 8 for 15s |
 
 ## Project Structure
 
 ```
 src/
 ├── api/
-│   └── todoist.ts         # Todoist REST API v2 client
+│   ├── todoist.ts              # Todoist REST API v2 client
+│   └── googleCalendar.ts       # Google Calendar API v3 with OAuth2
 ├── components/
-│   ├── ErrorBanner.tsx    # Dismissible error display
-│   ├── Header.tsx         # Top bar with date & controls
-│   ├── SignInScreen.tsx   # Setup instructions screen
-│   ├── TaskCard.tsx       # Individual task display
-│   └── TaskSection.tsx    # Column with header + task list
+│   ├── HomeScreen.tsx           # App launcher with clock & tiles
+│   ├── TaskWallApp.tsx          # TaskWall app shell
+│   ├── Header.tsx               # TaskWall top bar
+│   ├── TaskSection.tsx          # Task list column
+│   ├── TaskCard.tsx             # Individual task card
+│   ├── CalendarApp.tsx          # Calendar app with header & view switching
+│   ├── CalendarDayView.tsx      # Hourly timeline + upcoming sidebar
+│   ├── CalendarWeekView.tsx     # 7-column event card layout
+│   ├── CalendarMonthView.tsx    # Month grid with event snippets
+│   ├── AddTaskForm.tsx          # New task form
+│   ├── DatePicker.tsx           # Calendar date selector
+│   ├── RecurrencePicker.tsx     # Task recurrence configuration
+│   ├── OnScreenKeyboard.tsx     # Touch-friendly virtual keyboard
+│   ├── Popover.tsx              # Floating popover component
+│   ├── ErrorBanner.tsx          # Dismissible error display
+│   └── SignInScreen.tsx         # Setup instructions screen
 ├── hooks/
-│   └── useTasks.ts        # Data fetching & auto-refresh hook
+│   ├── useTasks.ts              # Todoist data fetching & auto-refresh
+│   ├── useCalendarEvents.ts     # Google Calendar data fetching & auto-refresh
+│   └── useDragScroll.ts         # Touch drag-to-scroll behavior
 ├── utils/
-│   └── date.ts            # Date formatting helpers
-├── types.ts               # TypeScript interfaces
-├── App.tsx                # Main app layout
-├── main.tsx               # Entry point
-└── index.css              # Tailwind + global styles
+│   └── date.ts                  # Date formatting helpers
+├── types.ts                     # TypeScript interfaces
+├── App.tsx                      # App shell with routing & display scaling
+├── main.tsx                     # Entry point
+└── index.css                    # Tailwind + global styles
+scripts/
+└── google-auth.mjs              # One-time OAuth2 setup for Google Calendar
 ```
 
 ## Tech Stack
@@ -302,7 +386,8 @@ src/
 - **React 19** + **TypeScript 5.7**
 - **Vite 6** (build tool)
 - **Tailwind CSS 3.4** (styling)
-- **Todoist REST API v2** (data source)
+- **Todoist REST API v2** (task data)
+- **Google Calendar API v3** (calendar data, OAuth2)
 
 ## License
 
