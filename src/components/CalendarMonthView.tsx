@@ -100,7 +100,7 @@ export default function CalendarMonthView({ date, events }: MonthViewProps) {
                     {dayEvents.slice(0, MAX_VISIBLE).map((e) => (
                       <div
                         key={e.id}
-                        className="flex items-center gap-1 px-1 py-[2px] rounded truncate mb-[2px]"
+                        className="flex items-center gap-1 px-1 py-[2px] rounded truncate mb-[2px] animate-slide-in"
                         title={`${e.title}${e.allDay ? '' : ` · ${formatTime12Short(e.start)}`} · ${e.calendarName}`}
                       >
                         <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: e.color }} />
