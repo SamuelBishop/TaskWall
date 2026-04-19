@@ -129,7 +129,7 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
               {allDayEvents.map((e) => (
                 <div
                   key={e.id}
-                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-4 py-2 text-base font-medium text-wall-text truncate max-w-[280px]"
+                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-4 py-2 text-base font-medium text-wall-text truncate max-w-[280px] animate-slide-in"
                   style={{ borderLeftColor: e.color }}
                 >
                   {e.title}
@@ -157,7 +157,7 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
               {laid.map(({ event, left, width }) => (
                 <div
                   key={event.id}
-                  className="absolute border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2 overflow-hidden hover:shadow-md transition-shadow cursor-default"
+                  className="absolute border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2 overflow-hidden hover:shadow-md transition-shadow cursor-default animate-slide-in"
                   style={{
                     borderLeftColor: event.color,
                     top: eventTop(event),
@@ -203,7 +203,7 @@ export default function CalendarDayView({ date, events, allEvents }: DayViewProp
               evts.slice(0, 5).map((e) => (
                 <div
                   key={e.id}
-                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2.5 mb-2 transition-all hover:shadow-sm"
+                  className="border-l-[3px] bg-wall-surface rounded-r-lg px-3 py-2.5 mb-2 transition-all hover:shadow-sm animate-slide-in"
                   style={{ borderLeftColor: e.color }}
                 >
                   <p className="text-base font-medium text-wall-text truncate">{e.title}</p>

@@ -183,6 +183,10 @@ export async function fetchAllEvents(
   const minISO = timeMin.toISOString();
   const maxISO = timeMax.toISOString();
 
+  // Pre-warm all tokens in parallel so calendar fetches don't stagger
+  const tokenKeys = [...new Set(calendars.map((c) => c.tokenKey))];
+  await Promise.allSettled(tokenKeys.map((key) => getAccessToken(key)));
+
   const settled = await Promise.allSettled(
     calendars.map(async (cal) => {
       const raw = await fetchCalendarEvents(cal.id, cal.tokenKey, minISO, maxISO);

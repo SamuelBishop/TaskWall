@@ -50,7 +50,7 @@ export default function CalendarWeekView({ weekStart, events }: WeekViewProps) {
   }
 
   return (
-    <div className="flex-1 flex min-h-0 overflow-hidden">
+    <div className="flex-1 grid grid-cols-7 min-h-0 overflow-hidden">
       {days.map((day) => {
         const isToday = isSameDay(day, today);
         const dayEvents = getEventsForDay(events, day);
@@ -64,7 +64,7 @@ function DayColumn({ day, isToday, events }: { day: Date; isToday: boolean; even
   const scrollRef = useDragScroll<HTMLDivElement>();
 
   return (
-    <div className={`flex-1 flex flex-col min-h-0 border-r border-wall-border last:border-r-0 ${isToday ? 'bg-wall-today/[0.03]' : ''}`}>
+    <div className={`flex flex-col min-h-0 min-w-0 border-r border-wall-border last:border-r-0 ${isToday ? 'bg-wall-today/[0.03]' : ''}`}>
       {/* Day header */}
       <div className={`flex-shrink-0 text-center py-3 border-b border-wall-border ${isToday ? 'bg-wall-today/10' : ''}`}>
         <p className={`text-sm font-semibold uppercase tracking-wider ${isToday ? 'text-wall-today' : 'text-wall-muted'}`}>
