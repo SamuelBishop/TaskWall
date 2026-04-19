@@ -58,3 +58,6 @@ export interface TaskGroup {
   upcoming: TaskItem[];
   future: TaskItem[];
 }
+
+export type ActiveApp = 'home' | 'taskwall' | 'calendar';
+export type LaunchableApp = Exclude<ActiveApp, 'home'>;

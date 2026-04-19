@@ -3,6 +3,7 @@ import { formatFullDate, formatTime } from '../utils/date';
 import type { Collaborator } from '../types';
 import AddTaskForm from './AddTaskForm';
 import Popover from './Popover';
+import { GridIcon } from './HomeScreen';
 
 interface HeaderProps {
   lastUpdated: Date | null;
@@ -18,6 +19,7 @@ interface HeaderProps {
   }) => Promise<void>;
   page: 'main' | 'overdue' | 'future' | 'completed';
   onPageChange: (page: 'main' | 'overdue' | 'future' | 'completed') => void;
+  onNavigateHome?: () => void;
 }
 
 export default function Header({
@@ -30,6 +32,7 @@ export default function Header({
   onAddTask,
   page,
   onPageChange,
+  onNavigateHome,
 }: HeaderProps) {
   const now = new Date();
   const [filterOpen, setFilterOpen] = useState(false);
@@ -43,6 +46,15 @@ export default function Header({
   return (
     <header className="flex items-center justify-between px-8 py-5 border-b border-wall-border">
       <div className="flex items-center gap-4">
+        {onNavigateHome && (
+          <button
+            onClick={onNavigateHome}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-wall-muted hover:text-wall-text rounded-lg hover:bg-wall-surface transition-all"
+            title="Home"
+          >
+            <GridIcon />
+          </button>
+        )}
         <h1 className="text-3xl font-bold text-wall-text tracking-tight">
           TaskWall
         </h1>
